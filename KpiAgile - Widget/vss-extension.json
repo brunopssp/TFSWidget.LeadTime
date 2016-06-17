@@ -1,0 +1,81 @@
+{
+    "manifestVersion": 1,
+    "id": "vsts-extensions-myExtensions",
+    "version": "1.0.0",
+    "name": "My First Set of Widgets",
+    "description": "Samples containing different widgets extending dashboards",
+    "publisher": "brunosouza",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "HelloWorldWidget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog"
+            ],
+            "properties": {
+                "name": "Hello World Widget",
+                "description": "My first widget",
+                "catalogIconUrl:": "img/CatalogIcon.png",
+                "previewImageUrl": "img/preview.png",
+                "uri": "hello-world.html",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 2
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "HelloWorldWidget2",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog"
+            ],
+            "properties": {
+                "name": "Hello World Widget 2 (with API)",
+                "description": "My second widget",
+                "previewImageUrl": "img/preview2.png",
+                "uri": "hello-world2.html",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 2
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        }
+    ],
+    "files": [
+        {
+            "path": "hello-world.html",
+            "addressable": true
+        },
+        {
+            "path": "hello-world2.html",
+            "addressable": true
+        },
+        {
+            "path": "sdk/scripts",
+            "addressable": true
+        },
+        {
+            "path": "img",
+            "addressable": true
+        }
+    ],
+    "scopes": [
+        "vso.work"
+    ]
+}
