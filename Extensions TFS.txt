@@ -1,0 +1,7 @@
+Referencias
+
+https://www.visualstudio.com/en-us/docs/integrate/extensions/develop/add-dashboard-widget#step-4-display-the-response
+https://www.visualstudio.com/en-us/docs/integrate/extensions/reference/client/api/tfs/workitemtracking/restclient/workitemtrackinghttpclient2_2
+https://www.visualstudio.com/en-us/docs/integrate/api/wit/revisions
+http://www.w3schools.com/js/default.asp
+
