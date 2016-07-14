@@ -61,6 +61,9 @@
         "path": "js/KpiAgile.js",
         "addressable": true
     }, {
+        "path": "js/polyfill.min.js",
+        "addressable": true
+    }, {
         "path": "img",
         "addressable": true
     }],
