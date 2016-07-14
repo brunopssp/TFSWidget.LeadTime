@@ -17,8 +17,8 @@
         "properties": {
             "name": "Hello World Widget",
             "description": "My first widget",
-            "catalogIconUrl:": "img/CatalogIcon.png",
-            "previewImageUrl": "img/preview.png",
+            "catalogIconUrl:": "img/logo.png",
+            "previewImageUrl": "img/helloWorld.png",
             "uri": "hello-world.html",
             "supportedSizes": [{
                 "rowSpan": 1,
@@ -37,7 +37,7 @@
         "properties": {
             "name": "Hello World Widget 2 (with API)",
             "description": "My second widget",
-            "previewImageUrl": "img/preview2.png",
+            "previewImageUrl": "img/helloWorld.png",
             "uri": "hello-world2.html",
             "supportedSizes": [{
                 "rowSpan": 1,
