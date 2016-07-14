@@ -1,6 +1,6 @@
 "use strict";
 
-var intLeadTime = null;
+var intLeadTime = new Array();
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -34,8 +34,21 @@ function ProcessRevisions(workItem) {
     var dateApproved = RevApproved != null && RevApproved.fields != undefined ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
     var dateDone = RevDone != null && RevDone.fields != undefined ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
-    console.log(dateApproved + ' - ' + dateDone);
     intLeadTime.push(DaysBetween(dateApproved, dateDone));
+
+    ShowResult();
+}
+
+function ShowResult() {
+    var sum = 0;
+    console.log(intLeadTime.length);
+    intLeadTime.forEach(function (item) {
+        console.log(item);
+        sum += item;
+    });
+
+    var avg = sum / intLeadTime.length;
+    $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
 }
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
@@ -48,27 +61,12 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
             //Get a tfs query to get it's id
             return client.getQuery(projectId, "Shared Queries/Feedback").then(function (query) {
-                intLeadTime = [];
                 //Get query result
                 client.queryById(query.id).then(function (resultQuery) {
                     //ForEach workItem in query, get the respective Revision
-
-                    console.log('inicio foreach');
                     resultQuery.workItems.forEach(function (workItem) {
                         client.getRevisions(workItem.id).then(ProcessRevisions);
                     });
-                    console.log('fim foreach');
-
-                    console.log('inicio avg');
-                    var sum = 0;
-                    intLeadTime.forEach(function (item) {
-                        console.log(item);
-                        sum += item;
-                    });
-                    console.log('fim avg');
-
-                    var avg = sum / intLeadTime.length;
-                    $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
                 });
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }, function (error) {
