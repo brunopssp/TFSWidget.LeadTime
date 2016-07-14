@@ -30,8 +30,8 @@ function ProcessRevisions(workItem) {
         return workItemRevision.fields["System.State"] == "Done";
     });
 
-    var dateApproved = new Date(RevApproved.fields["System.ChangedDate"]);
-    var dateDone = new Date(RevDone.fields["System.ChangedDate"]);
+    var dateApproved = (RevApproved.fields !== undefined) ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
+    var dateDone = (RevDone.fields !== undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
     intLeadTime.push(DaysBetween(dateApproved, dateDone));
 
@@ -55,10 +55,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
 
-
-
-
-
                 //Get a tfs query to get it's id
                 return client.getQuery(projectId, "Shared Queries/Feedback").then(query => {
                         intLeadTime = [];
@@ -76,14 +72,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     });
             }
 
-
-
-
-
-
-
-
-
             return {
                 load: function(widgetSettings) {
                     var $title = $('h2.title');
@@ -94,4 +82,5 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             }
         });
         VSS.notifyLoadSucceeded();
-    });
+    }
+);
