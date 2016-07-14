@@ -30,8 +30,8 @@ function ProcessRevisions(workItem) {
         return workItemRevision.fields["System.State"] == "Done";
     });
 
-    var dateApproved = (RevApproved.fields !== undefined) ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
-    var dateDone = (RevDone.fields !== undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
+    var dateApproved = (RevApproved != null && RevApproved.fields != undefined) ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
+    var dateDone = (RevDone != null && RevDone.fields != undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
     intLeadTime.push(DaysBetween(dateApproved, dateDone));
 
