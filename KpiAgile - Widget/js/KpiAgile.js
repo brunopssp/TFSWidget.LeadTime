@@ -35,16 +35,6 @@ function ProcessRevisions(workItem) {
     var dateDone = RevDone != null && RevDone.fields != undefined ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
     intLeadTime.push(DaysBetween(dateApproved, dateDone));
-
-    var sum = 0;
-    intLeadTime.forEach(function (item) {
-        sum += item;
-    });
-
-    var $list = $('<ul>');
-    $list.append($('<li>').text("Lead Time Avg (Days): " + sum / intLeadTime.length));
-
-    $('#query-info-container').empty().append($list);
 }
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
@@ -64,6 +54,14 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     resultQuery.workItems.forEach(function (workItem) {
                         client.getRevisions(workItem.id).then(ProcessRevisions);
                     });
+
+                    var sum = 0;
+                    intLeadTime.forEach(function (item) {
+                        sum += item;
+                    });
+
+                    var avg = sum / intLeadTime.length;
+                    $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
                 });
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }, function (error) {
