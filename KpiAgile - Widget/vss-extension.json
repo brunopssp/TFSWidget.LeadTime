@@ -58,6 +58,9 @@
         "path": "sdk/scripts",
         "addressable": true
     }, {
+        "path": "js/KpiAgile.js",
+        "addressable": true
+    }, {
         "path": "img",
         "addressable": true
     }],
