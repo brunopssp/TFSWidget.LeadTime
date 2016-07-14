@@ -39,11 +39,10 @@ function ProcessRevisions(workItem) {
 
 function ShowResult() {
     var sum = 0;
-    console.log(intLeadTime.length);
     intLeadTime.forEach(item => {
-        console.log(item);
         sum += item;
     });
+    console.log(intLeadTime.length + '/' + sum);
 
     var avg = (sum / intLeadTime.length);
     $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
