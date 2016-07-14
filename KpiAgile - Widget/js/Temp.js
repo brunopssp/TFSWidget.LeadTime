@@ -42,8 +42,6 @@ function ShowResult() {
     intLeadTime.forEach(item => {
         sum += item;
     });
-    console.log(intLeadTime.length + '/' + sum);
-
     var avg = (sum / intLeadTime.length);
     $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
 }
