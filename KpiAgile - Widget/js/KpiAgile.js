@@ -1,6 +1,7 @@
 "use strict";
 
 var intLeadTime = new Array();
+var count = 0;
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -45,8 +46,12 @@ function ShowResult() {
         sum += item;
     });
     var avg = sum / intLeadTime.length;
+    console.log("Count: " + count);
+    console.log("intLeadTime.length: " + intLeadTime.length);
 
-    $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+    if (count == intLeadTime.length) {
+        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+    }
 }
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
@@ -62,7 +67,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 //Get query result
                 client.queryById(query.id).then(function (resultQuery) {
                     //ForEach workItem in query, get the respective Revision
-                    console.log(resultQuery.workItems.length);
+                    count = resultQuery.workItems.length;
                     resultQuery.workItems.forEach(function (workItem) {
                         client.getRevisions(workItem.id).then(ProcessRevisions);
                     });
