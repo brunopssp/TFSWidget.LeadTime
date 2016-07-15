@@ -45,7 +45,7 @@ function ShowResult() {
         sum += item;
     });
     var avg = sum / intLeadTime.length;
-    $('#query-info-container').empty().html(avg);
+    $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
     // $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
 }
 
