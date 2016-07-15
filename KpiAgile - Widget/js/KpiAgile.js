@@ -45,12 +45,13 @@ function ShowResult() {
         sum += item;
     });
     var avg = sum / intLeadTime.length;
-    $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
+    $('#query-info-container').empty().html(avg);
+    // $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
 }
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
     WidgetHelpers.IncludeWidgetStyles();
-    VSS.register("HelloWorldWidget2", function () {
+    VSS.register("LeadTimeMetric", function () {
         var getLeadTime = function getLeadTime(widgetSettings) {
             // Get a WIT client to make REST calls to VSTS
             var client = TFS_Wit_WebApi.getClient();
@@ -73,8 +74,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
         return {
             load: function load(widgetSettings) {
-                var $title = $('h2.title');
-                $title.text('Hello World');
+                // var $title = $('h2.title');
+                // $title.text('Lead Time');
 
                 return getLeadTime(widgetSettings);
             }

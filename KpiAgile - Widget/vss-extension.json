@@ -9,39 +9,19 @@
         "id": "Microsoft.VisualStudio.Services"
     }],
     "contributions": [{
-        "id": "HelloWorldWidget",
+        "id": "LeadTimeMetric",
         "type": "ms.vss-dashboards-web.widget",
         "targets": [
             "ms.vss-dashboards-web.widget-catalog"
         ],
         "properties": {
-            "name": "Hello World Widget",
-            "description": "My first widget",
-            "catalogIconUrl:": "img/logo.png",
+            "name": "Lead Time Metric",
+            "description": "Get the Lead Time of a set of Work Items in a specific query",
             "previewImageUrl": "img/helloWorld.png",
-            "uri": "hello-world.html",
+            "uri": "LeadTime.html",
             "supportedSizes": [{
                 "rowSpan": 1,
-                "columnSpan": 2
-            }],
-            "supportedScopes": [
-                "project_team"
-            ]
-        }
-    }, {
-        "id": "HelloWorldWidget2",
-        "type": "ms.vss-dashboards-web.widget",
-        "targets": [
-            "ms.vss-dashboards-web.widget-catalog"
-        ],
-        "properties": {
-            "name": "Hello World Widget 2 (with API)",
-            "description": "My second widget",
-            "previewImageUrl": "img/helloWorld.png",
-            "uri": "hello-world2.html",
-            "supportedSizes": [{
-                "rowSpan": 1,
-                "columnSpan": 2
+                "columnSpan": 1
             }],
             "supportedScopes": [
                 "project_team"
@@ -49,10 +29,7 @@
         }
     }],
     "files": [{
-        "path": "hello-world.html",
-        "addressable": true
-    }, {
-        "path": "hello-world2.html",
+        "path": "LeadTime.html",
         "addressable": true
     }, {
         "path": "sdk/scripts",

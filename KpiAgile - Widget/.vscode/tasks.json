@@ -3,7 +3,7 @@
     "command": "babel",
     "isShellCommand": true,
     "tasks": [{
-        "args": ["js/Temp.js", "--out-file", "js/KpiAgile.js", "-w", "--source-maps"],
+        "args": ["js/Source.js", "--out-file", "js/KpiAgile.js", "-w", "--source-maps"],
         "taskName": "watch",
         "suppressTaskName": true,
         "isBuildCommand": true,
