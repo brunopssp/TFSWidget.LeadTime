@@ -1,5 +1,4 @@
 var intLeadTime = new Array();
-var avg = 0;
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -43,9 +42,9 @@ function ShowResult() {
     intLeadTime.forEach(item => {
         sum += item;
     });
-    avg = (sum / intLeadTime.length);
-    //$('#query-info-container').empty().html(Math.round(avg * 10) / 10);
-    // $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
+    var avg = (sum / intLeadTime.length);
+
+    $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
 }
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
@@ -62,6 +61,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                         //Get query result
                         client.queryById(query.id).then(resultQuery => {
                             //ForEach workItem in query, get the respective Revision
+                            console.log(resultQuery.workItems.length);
                             resultQuery.workItems.forEach(workItem => {
                                 client.getRevisions(workItem.id).then(ProcessRevisions);
                             });
@@ -77,8 +77,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 load: function(widgetSettings) {
                     // var $title = $('h2.title');
                     // $title.text('Lead Time');
-                    $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
-
                     return getLeadTime(widgetSettings);
                 }
             };
