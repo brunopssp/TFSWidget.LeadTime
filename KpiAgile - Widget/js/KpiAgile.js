@@ -46,8 +46,6 @@ function ShowResult() {
         sum += item;
     });
     var avg = sum / intLeadTime.length;
-    console.log("Count: " + count);
-    console.log("intLeadTime.length: " + intLeadTime.length);
 
     if (countWorkItems == intLeadTime.length) {
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
