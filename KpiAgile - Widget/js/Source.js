@@ -1,5 +1,5 @@
 var intLeadTime = new Array();
-var count = 0;
+var countWorkItems = 0;
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -47,7 +47,7 @@ function ShowResult() {
     console.log("Count: " + count);
     console.log("intLeadTime.length: " + intLeadTime.length);
 
-    if (count == intLeadTime.length) {
+    if (countWorkItems == intLeadTime.length) {
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
     }
 }
@@ -66,7 +66,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                         //Get query result
                         client.queryById(query.id).then(resultQuery => {
                             //ForEach workItem in query, get the respective Revision
-                            count = resultQuery.workItems.length;
+                            countWorkItems = resultQuery.workItems.length;
                             resultQuery.workItems.forEach(workItem => {
                                 client.getRevisions(workItem.id).then(ProcessRevisions);
                             });
