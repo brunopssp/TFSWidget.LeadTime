@@ -1,6 +1,7 @@
 "use strict";
 
 var intLeadTime = new Array();
+var avg = 0;
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -44,8 +45,8 @@ function ShowResult() {
     intLeadTime.forEach(function (item) {
         sum += item;
     });
-    var avg = sum / intLeadTime.length;
-    $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+    avg = sum / intLeadTime.length;
+    //$('#query-info-container').empty().html(Math.round(avg * 10) / 10);
     // $('#query-info-container').empty().html("<strong>Lead Time Avg (Days):</strong> " + avg);
 }
 
@@ -76,6 +77,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             load: function load(widgetSettings) {
                 // var $title = $('h2.title');
                 // $title.text('Lead Time');
+                $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
 
                 return getLeadTime(widgetSettings);
             }
