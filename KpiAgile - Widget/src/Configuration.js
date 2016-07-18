@@ -7,24 +7,12 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
     function(WidgetHelpers, TFS_Wit_WebApi) {
         VSS.register("LeadTimeMetric.Configuration", function() {
             var $queryDropdown = $("#query-path-dropdown");
+
+
             var getLeadTimeConfig = function(widgetSettings) {
-                var client = TFS_Wit_WebApi.getClient();
-                var projectId = VSS.getWebContext().project.id;
-                return client.getQueries(projectId).then(queries => {
-                        //Get query result
-                        queries.children.forEach(element => {
-                            $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
 
-                            console.log("Querypath: " + element.path);
-                            $queryDropdown.val(settings.queryDropdown)
-                        });
 
-                        return WidgetHelpers.WidgetStatusHelper.Success();
-                    },
-                    function(error) {
-                        return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-                    }
-                );
+
             };
             return {
                 load: function(widgetSettings, widgetConfigurationContext) {
@@ -33,6 +21,27 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     if (settings && settings.queryPath) {
                         $queryDropdown.val(settings.queryPath);
                     }
+
+                    var client = TFS_Wit_WebApi.getClient();
+                    var projectId = VSS.getWebContext().project.id;
+                    client.getQuery(projectId, "Shared Queries").then(queries => {
+                        //Get query result
+                        console.log("Queriespath: " + queries.path);
+                        queries.children.forEach(element => {
+                            $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
+
+                            console.log("Querypath: " + element.path);
+                            $queryDropdown.val(settings.queryDropdown)
+                        });
+                    });
+
+                    //        return WidgetHelpers.WidgetStatusHelper.Success();
+                    //     },
+                    //     function(error) {
+                    //         return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+                    //     }
+                    // );
+
                     //Enable Live Preview
                     // $queryDropdown.on("change", function() {
                     //     var customSettings = {
@@ -45,8 +54,13 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     //     widgetConfigurationContext.notify(eventName, eventArgs);
                     // });
                     //^^^^^^
-                    return getLeadTimeConfig(widgetSettings);
+                    return WidgetHelpers.WidgetStatusHelper.Success();
                 },
+                function(error) {
+                    return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+                },
+
+
                 onSave: function() {
                     var customSettings = {
                         data: JSON.stringify({
