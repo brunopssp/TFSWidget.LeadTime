@@ -20,11 +20,11 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
-                client.getQuery(projectId, "Shared Queries").then(function (queries) {
+                client.getQueries(projectId, none, 2).then(function (queries) {
                     //Get query result
                     console.log("Queriespath: " + queries.path);
                     console.log("Children: " + queries.children);
-                    console.log("hasChildren: " + queries.haschildren);
+                    console.log("hasChildren: " + queries.hasChildren);
 
                     queries.children.forEach(function (element) {
                         $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
