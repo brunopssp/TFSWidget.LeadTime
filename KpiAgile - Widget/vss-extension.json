@@ -12,7 +12,8 @@
         "id": "LeadTimeMetric",
         "type": "ms.vss-dashboards-web.widget",
         "targets": [
-            "ms.vss-dashboards-web.widget-catalog"
+            "ms.vss-dashboards-web.widget-catalog",
+            "brunosouza.lead-time-extension.LeadTimeMetric.Configuration"
         ],
         "properties": {
             "name": "Lead Time Metric",
@@ -27,9 +28,23 @@
                 "project_team"
             ]
         }
+    }, {
+        "id": "LeadTimeMetric.Configuration",
+        "type": "ms.vss-dashboards-web.widget-configuration",
+        "targets": [
+            "ms.vss-dashboards-web.widget-configuration"
+        ],
+        "properties": {
+            "name": "Lead Time Metric Configuration",
+            "description": "Configures Lead Time Metric",
+            "uri": "configuration.html"
+        }
     }],
     "files": [{
         "path": "LeadTime.html",
+        "addressable": true
+    }, {
+        "path": "configuration.html",
         "addressable": true
     }, {
         "path": "sdk/scripts",
@@ -39,6 +54,9 @@
         "addressable": true
     }, {
         "path": "js/polyfill.min.js",
+        "addressable": true
+    }, {
+        "path": "js/Configuration.js",
         "addressable": true
     }, {
         "path": "img",

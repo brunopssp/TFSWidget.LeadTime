@@ -7,61 +7,23 @@ VSS.init({
     usePlatformStyles: true
 });
 
-function DaysBetween(date1, date2) {
-    //Get 1 day in milliseconds
-    var one_day = 1000 * 60 * 60 * 24;
-
-    // Convert both dates to milliseconds
-    var date1_ms = date1.getTime();
-    var date2_ms = date2.getTime();
-
-    // Calculate the difference in milliseconds
-    var difference_ms = date2_ms - date1_ms;
-
-    // Convert back to days and return
-    return Math.round(difference_ms / one_day);
-}
-
-function ProcessRevisions(workItem) {
-
-    var RevApproved = workItem.find(function (workItemRevision) {
-        return workItemRevision.fields["System.State"] == "Approved";
-    });
-
-    var RevDone = workItem.find(function (workItemRevision) {
-        return workItemRevision.fields["System.State"] == "Done";
-    });
-
-    var dateApproved = RevApproved != null && RevApproved.fields != undefined ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
-    var dateDone = RevDone != null && RevDone.fields != undefined ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
-
-    intLeadTime.push(DaysBetween(dateApproved, dateDone));
-
-    ShowResult();
-}
-
-function ShowResult() {
-    var sum = 0;
-    intLeadTime.forEach(function (item) {
-        sum += item;
-    });
-    var avg = sum / intLeadTime.length;
-
-    if (countWorkItems == intLeadTime.length) {
-        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
-    }
-}
-
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
     WidgetHelpers.IncludeWidgetStyles();
     VSS.register("LeadTimeMetric", function () {
         var getLeadTime = function getLeadTime(widgetSettings) {
+
             // Get a WIT client to make REST calls to VSTS
             var client = TFS_Wit_WebApi.getClient();
             var projectId = VSS.getWebContext().project.id;
+            var settings = JSON.parse(widgetSettings.customSettings.data);
+            if (!settings || !settings.queryPath) {
+                $('#query-info-container').empty().text("0");
+                $('#footer').empty().text("Please configure a query path.");
+                return WidgetHelpers.WidgetStatusHelper.Success();
+            }
 
             //Get a tfs query to get it's id
-            return client.getQuery(projectId, "Shared Queries/Feedback").then(function (query) {
+            return client.getQuery(projectId, settings.queryPath).then(function (query) {
                 //Get query result
                 client.queryById(query.id).then(function (resultQuery) {
                     //ForEach workItem in query, get the respective Revision
@@ -81,10 +43,57 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 // var $title = $('h2.title');
                 // $title.text('Lead Time');
                 return getLeadTime(widgetSettings);
+            },
+            reload: function reload(widgetSettings) {
+                return getLeadTime(widgetSettings);
             }
         };
     });
     VSS.notifyLoadSucceeded();
 });
 
+function ProcessRevisions(workItem) {
+
+    var RevApproved = workItem.find(function (workItemRevision) {
+        return workItemRevision.fields["System.State"] == "Approved";
+    });
+
+    var RevDone = workItem.find(function (workItemRevision) {
+        return workItemRevision.fields["System.State"] == "Done";
+    });
+
+    var dateApproved = RevApproved != null && RevApproved.fields != undefined ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
+    var dateDone = RevDone != null && RevDone.fields != undefined ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
+
+    intLeadTime.push(DaysBetween(dateApproved, dateDone));
+
+    ShowResult();
+}
+
+function DaysBetween(date1, date2) {
+    //Get 1 day in milliseconds
+    var one_day = 1000 * 60 * 60 * 24;
+
+    // Convert both dates to milliseconds
+    var date1_ms = date1.getTime();
+    var date2_ms = date2.getTime();
+
+    // Calculate the difference in milliseconds
+    var difference_ms = date2_ms - date1_ms;
+
+    // Convert back to days and return
+    return Math.round(difference_ms / one_day);
+}
+
+function ShowResult() {
+    var sum = 0;
+    intLeadTime.forEach(function (item) {
+        sum += item;
+    });
+    var avg = sum / intLeadTime.length;
+
+    if (countWorkItems == intLeadTime.length) {
+        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+    }
+}
 //# sourceMappingURL=KpiAgile.js.map
