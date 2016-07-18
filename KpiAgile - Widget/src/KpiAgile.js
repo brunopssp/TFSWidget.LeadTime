@@ -20,7 +20,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     $('#query-info-container').empty().text("0");
                     $('#footer').empty().text("Please configure a query path");
                     return WidgetHelpers.WidgetStatusHelper.Success();
-                }
+                };
                 if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
                     $('#query-info-container').empty().text("001");
                     $('#footer').empty().text("Config Changed.");
@@ -41,7 +41,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                             return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
                         }
                     );
-                }
+                };
             };
 
             return {
