@@ -28,11 +28,13 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                         //Get query result
 
                         queries.children.forEach(element => {
-                            $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
-                            console.log("Children: " + element.children);
-                            console.log("hasChildren: " + element.hasChildren);
-                            console.log("Querypath: " + element.path);
-                            $queryDropdown.val(settings.queryDropdown)
+                            if (element.hasChildren != undefined) {
+                                $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
+                                console.log("Children: " + element.children);
+                                console.log("hasChildren: " + element.hasChildren);
+                                console.log("Querypath: " + element.path);
+                                $queryDropdown.val(settings.queryDropdown);
+                            }
                         });
                     });
 
@@ -44,16 +46,16 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     // );
 
                     //Enable Live Preview
-                    // $queryDropdown.on("change", function() {
-                    //     var customSettings = {
-                    //         data: JSON.stringify({
-                    //             queryPath: $queryDropdown.val()
-                    //         })
-                    //     };
-                    //     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
-                    //     var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
-                    //     widgetConfigurationContext.notify(eventName, eventArgs);
-                    // });
+                    $queryDropdown.on("change", function() {
+                        var customSettings = {
+                            data: JSON.stringify({
+                                queryPath: $queryDropdown.val()
+                            })
+                        };
+                        var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
+                        var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
+                        widgetConfigurationContext.notify(eventName, eventArgs);
+                    });
                     //^^^^^^
                     return WidgetHelpers.WidgetStatusHelper.Success();
                 },
