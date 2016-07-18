@@ -5,11 +5,13 @@ VSS.init({
     usePlatformStyles: true
 });
 
-VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
+VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", "TFS/WorkItemTracking/Contracts"], function (WidgetHelpers, TFS_Wit_WebApi, TFS_contracts) {
     VSS.register("LeadTimeMetric.Configuration", function () {
         var $queryDropdown = $("#query-path-dropdown");
 
-        var getLeadTimeConfig = function getLeadTimeConfig(widgetSettings) {};
+        // var getLeadTimeConfig = function(widgetSettings) {
+
+        // };
         return {
             load: function load(widgetSettings, widgetConfigurationContext) {
 
@@ -20,7 +22,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
-                client.getQueries(projectId, none, 2).then(function (queries) {
+                client.getQueries(projectId, TFS_contracts.QueryExpand.None, 2).then(function (queries) {
                     //Get query result
                     console.log("Queriespath: " + queries.path);
                     console.log("Children: " + queries.children);
