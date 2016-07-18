@@ -94,6 +94,7 @@ function ShowResult() {
 
     if (countWorkItems == intLeadTime.length) {
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+        $('#footer').empty().text("Average in Days");
     }
 }
 //# sourceMappingURL=KpiAgile.js.map
