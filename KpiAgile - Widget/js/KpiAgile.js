@@ -20,10 +20,10 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 $('#query-info-container').empty().text("0");
                 $('#footer').empty().text("Please configure a query path");
                 return WidgetHelpers.WidgetStatusHelper.Success();
-            };
+            }
             if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
                 $('#query-info-container').empty().text("001");
-                $('#footer').empty().text("Config Changed.");
+                $('#footer').empty().text("...");
 
                 //Get a tfs query to get it's id
                 return client.getQuery(projectId, settings.queryPath).then(function (query) {
@@ -31,6 +31,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     client.queryById(query.id).then(function (resultQuery) {
                         //ForEach workItem in query, get the respective Revision
                         countWorkItems = resultQuery.workItems.length;
+                        intLeadTime = new Array();
                         resultQuery.workItems.forEach(function (workItem) {
                             client.getRevisions(workItem.id).then(ProcessRevisions);
                         });
@@ -39,7 +40,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 }, function (error) {
                     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
                 });
-            };
+            }
         };
 
         return {
@@ -49,7 +50,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 return getLeadTime(widgetSettings);
             },
             reload: function reload(widgetSettings) {
-                console.log("Reload");
                 return getLeadTime(widgetSettings);
             }
         };
@@ -59,7 +59,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
 function ProcessRevisions(workItem) {
 
-    console.log("processRevision");
     var RevApproved = workItem.find(function (workItemRevision) {
         return workItemRevision.fields["System.State"] == "Approved";
     });
