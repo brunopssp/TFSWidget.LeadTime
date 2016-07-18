@@ -26,7 +26,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                             $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
                             $queryDropdown.val(settings.queryDropdown);
                         }
-                        if (subFolderQuery.hasChildren == true) {
+                        if (rootFolderQuery.hasChildren == true) {
                             rootFolderQuery.children.forEach(function (subFolderQuery) {
                                 if (subFolderQuery.hasChildren == undefined) {
                                     $("<option>" + subFolderQuery.path + "</option>").attr("value", subFolderQuery.path).appendTo($queryDropdown);
