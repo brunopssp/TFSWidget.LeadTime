@@ -24,13 +24,12 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 var projectId = VSS.getWebContext().project.id;
                 client.getQueries(projectId, TFS_contracts.QueryExpand.None, 2).then(function (queries) {
                     //Get query result
-                    console.log("Queriespath: " + queries.path);
-                    console.log("Children: " + queries.children);
-                    console.log("hasChildren: " + queries.hasChildren);
+                    console.log("Count: " + queries.count);
 
-                    queries.children.forEach(function (element) {
+                    queries.forEach(function (element) {
                         $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
-
+                        console.log("Children: " + element.children);
+                        console.log("hasChildren: " + element.hasChildren);
                         console.log("Querypath: " + element.path);
                         $queryDropdown.val(settings.queryDropdown);
                     });
