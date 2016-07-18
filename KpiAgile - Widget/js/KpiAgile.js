@@ -22,6 +22,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }
             if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
+                $('h2.title').text("Lead Time");
                 $('#query-info-container').empty().text("");
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                 $('#footer').empty().text("...");
@@ -99,6 +100,7 @@ function ShowResult() {
     var avg = sum / intLeadTime.length;
 
     if (countWorkItems == intLeadTime.length) {
+        $('h2.title').text(settings.queryPath.substr(15));
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
         $('#footer').empty().text("Average in Days");
     }
