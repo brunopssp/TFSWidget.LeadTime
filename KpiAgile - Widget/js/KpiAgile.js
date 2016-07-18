@@ -12,34 +12,34 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
     VSS.register("LeadTimeMetric", function () {
         var getLeadTime = function getLeadTime(widgetSettings) {
 
-            if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
-                $('#query-info-container').empty().text("0");
-                $('#footer').empty().text("Please configure a query path.");
-            }
             // Get a WIT client to make REST calls to VSTS
             var client = TFS_Wit_WebApi.getClient();
             var projectId = VSS.getWebContext().project.id;
             var settings = JSON.parse(widgetSettings.customSettings.data);
             if (!settings || !settings.queryPath) {
                 $('#query-info-container').empty().text("0");
-                $('#footer').empty().text("Please configure a query path.");
+                $('#footer').empty().text("Please configure a query path");
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }
+            if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
+                $('#query-info-container').empty().text("001");
+                $('#footer').empty().text("Config Changed.");
 
-            //Get a tfs query to get it's id
-            return client.getQuery(projectId, settings.queryPath).then(function (query) {
-                //Get query result
-                client.queryById(query.id).then(function (resultQuery) {
-                    //ForEach workItem in query, get the respective Revision
-                    countWorkItems = resultQuery.workItems.length;
-                    resultQuery.workItems.forEach(function (workItem) {
-                        client.getRevisions(workItem.id).then(ProcessRevisions);
+                //Get a tfs query to get it's id
+                return client.getQuery(projectId, settings.queryPath).then(function (query) {
+                    //Get query result
+                    client.queryById(query.id).then(function (resultQuery) {
+                        //ForEach workItem in query, get the respective Revision
+                        countWorkItems = resultQuery.workItems.length;
+                        resultQuery.workItems.forEach(function (workItem) {
+                            client.getRevisions(workItem.id).then(ProcessRevisions);
+                        });
                     });
+                    return WidgetHelpers.WidgetStatusHelper.Success();
+                }, function (error) {
+                    return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
                 });
-                return WidgetHelpers.WidgetStatusHelper.Success();
-            }, function (error) {
-                return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-            });
+            }
         };
 
         return {
