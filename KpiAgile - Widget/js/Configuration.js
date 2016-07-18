@@ -5,10 +5,25 @@ VSS.init({
     usePlatformStyles: true
 });
 
-VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
+VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"], function (WidgetHelpers, TFS_Wit_WebApi) {
     VSS.register("LeadTimeMetric.Configuration", function () {
         var $queryDropdown = $("#query-path-dropdown");
+        var getLeadTimeConfig = function getLeadTimeConfig(widgetSettings) {
+            var client = TFS_Wit_WebApi.getClient();
+            var projectId = VSS.getWebContext().project.id;
+            return client.getQueries(projectId).then(function (queries) {
+                //Get query result
+                queries.forEach(function (element) {
+                    var option = document.createElement("option");
+                    option.text = element.path;
+                    $queryDropdown.add(option);
+                });
 
+                return WidgetHelpers.WidgetStatusHelper.Success();
+            }, function (error) {
+                return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+            });
+        };
         return {
             load: function load(widgetSettings, widgetConfigurationContext) {
 
@@ -28,7 +43,7 @@ VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
                     widgetConfigurationContext.notify(eventName, eventArgs);
                 });
                 //^^^^^^
-                return WidgetHelpers.WidgetStatusHelper.Success();
+                return getLeadTimeConfig(widgetSettings);
             },
             onSave: function onSave() {
                 var customSettings = {

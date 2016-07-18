@@ -35,7 +35,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     },
                     function(error) {
                         return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-                    });
+                    }
+                );
             };
 
             return {
