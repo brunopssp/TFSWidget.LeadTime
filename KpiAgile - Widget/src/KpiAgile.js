@@ -51,6 +51,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     return getLeadTime(widgetSettings);
                 },
                 reload: function(widgetSettings) {
+                    console.log("Reload");
                     return getLeadTime(widgetSettings);
                 }
             };
@@ -61,6 +62,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
 function ProcessRevisions(workItem) {
 
+    console.log("processRevision");
     var RevApproved = workItem.find(workItemRevision => {
         return workItemRevision.fields["System.State"] == "Approved";
     });
@@ -93,11 +95,15 @@ function DaysBetween(date1, date2) {
 }
 
 function ShowResult() {
+    console.log("ShowResult");
     var sum = 0;
     intLeadTime.forEach(item => {
         sum += item;
     });
     var avg = (sum / intLeadTime.length);
+
+    console.log("countWorkItems: " + countWorkItems);
+    console.log("intLeadTime.length: " + intLeadTime.length);
 
     if (countWorkItems == intLeadTime.length) {
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);

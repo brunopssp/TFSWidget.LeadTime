@@ -43,6 +43,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                             queryPath: $queryDropdown.val()
                         })
                     };
+                    console.log("onchange");
                     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
                     var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
                     widgetConfigurationContext.notify(eventName, eventArgs);
