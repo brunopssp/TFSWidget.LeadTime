@@ -12,6 +12,10 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
     VSS.register("LeadTimeMetric", function () {
         var getLeadTime = function getLeadTime(widgetSettings) {
 
+            if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
+                $('#query-info-container').empty().text("0");
+                $('#footer').empty().text("Please configure a query path.");
+            }
             // Get a WIT client to make REST calls to VSTS
             var client = TFS_Wit_WebApi.getClient();
             var projectId = VSS.getWebContext().project.id;
