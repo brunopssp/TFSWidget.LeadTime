@@ -20,22 +20,15 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     var projectId = VSS.getWebContext().project.id;
                     client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(queries => {
                         //Get query result
-
-                        queries.children.forEach(element => {
-                            if (element.hasChildren == undefined) {
-                                $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
-                                console.log("Children: " + element.children);
-                                console.log("hasChildren: " + element.hasChildren);
-                                console.log("Querypath: " + element.path);
+                        queries.children.forEach(rootFolderQuery => {
+                            if (rootFolderQuery.hasChildren == undefined) {
+                                $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
                                 $queryDropdown.val(settings.queryDropdown);
-                            } //
-                            if (element.hasChildren == true) {
-                                element.children.forEach(subelement => {
-                                    if (subelement.hasChildren == undefined) {
-                                        $("<option>" + subelement.path + "</option>").attr("value", subelement.path).appendTo($queryDropdown);
-                                        console.log("SChildren: " + subelement.children);
-                                        console.log("ShasChildren: " + subelement.hasChildren);
-                                        console.log("SQuerypath: " + subelement.path);
+                            }
+                            if (subFolderQuery.hasChildren == true) {
+                                rootFolderQuery.children.forEach(subFolderQuery => {
+                                    if (subFolderQuery.hasChildren == undefined) {
+                                        $("<option>" + subFolderQuery.path + "</option>").attr("value", subFolderQuery.path).appendTo($queryDropdown);
                                         $queryDropdown.val(settings.queryDropdown);
                                     }
                                 });
@@ -59,8 +52,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 function(error) {
                     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
                 },
-
-
                 onSave: function() {
                     var customSettings = {
                         data: JSON.stringify({
