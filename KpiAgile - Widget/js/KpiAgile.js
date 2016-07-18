@@ -2,6 +2,7 @@
 
 var intLeadTime = new Array();
 var countWorkItems = 0;
+var settings = null;
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -15,7 +16,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             // Get a WIT client to make REST calls to VSTS
             var client = TFS_Wit_WebApi.getClient();
             var projectId = VSS.getWebContext().project.id;
-            var settings = JSON.parse(widgetSettings.customSettings.data);
+            settings = JSON.parse(widgetSettings.customSettings.data);
             if (!settings || !settings.queryPath) {
                 $('#query-info-container').empty().text("0");
                 $('#footer').empty().text("Please configure a query path");
