@@ -9,9 +9,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
     VSS.register("LeadTimeMetric.Configuration", function () {
         var $queryDropdown = $("#query-path-dropdown");
 
-        // var getLeadTimeConfig = function(widgetSettings) {
-
-        // };
         return {
             load: function load(widgetSettings, widgetConfigurationContext) {
 
@@ -22,11 +19,11 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
 
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
-                client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 1).then(function (queries) {
+                client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(function (queries) {
                     //Get query result
 
                     queries.children.forEach(function (element) {
-                        if (element.hasChildren != undefined) {
+                        if (element.hasChildren == undefined) {
                             $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
                             console.log("Children: " + element.children);
                             console.log("hasChildren: " + element.hasChildren);
@@ -35,13 +32,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                         }
                     });
                 });
-
-                //        return WidgetHelpers.WidgetStatusHelper.Success();
-                //     },
-                //     function(error) {
-                //         return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-                //     }
-                // );
 
                 //Enable Live Preview
                 $queryDropdown.on("change", function () {
