@@ -23,16 +23,26 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     //Get query result
 
                     queries.children.forEach(function (element) {
-                        //if (element.hasChildren == undefined) {
-                        $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
-                        console.log("Children: " + element.children);
-                        console.log("hasChildren: " + element.hasChildren);
-                        console.log("Querypath: " + element.path);
-                        $queryDropdown.val(settings.queryDropdown);
-                        //}
+                        if (element.hasChildren == undefined) {
+                            $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
+                            console.log("Children: " + element.children);
+                            console.log("hasChildren: " + element.hasChildren);
+                            console.log("Querypath: " + element.path);
+                            $queryDropdown.val(settings.queryDropdown);
+                        } //
+                        if (element.hasChildren == true) {
+                            element.children.forEach(function (subelement) {
+                                if (subelement.hasChildren == undefined) {
+                                    $("<option>" + subelement.path + "</option>").attr("value", subelement.path).appendTo($queryDropdown);
+                                    console.log("SChildren: " + subelement.children);
+                                    console.log("ShasChildren: " + subelement.hasChildren);
+                                    console.log("SQuerypath: " + subelement.path);
+                                    $queryDropdown.val(settings.queryDropdown);
+                                }
+                            });
+                        };
                     });
                 });
-
                 //Enable Live Preview
                 $queryDropdown.on("change", function () {
                     var customSettings = {
