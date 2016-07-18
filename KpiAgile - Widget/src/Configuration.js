@@ -10,12 +10,15 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             var getLeadTimeConfig = function(widgetSettings) {
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
-                return client.getQueries(projectId).then(queries => {
+                return client.getQuery(projectId, "Shared Queries").then(queries => {
                         //Get query result
                         queries.forEach(element => {
+                            var sel = document.getElementById("query-path-dropdown");
+
                             var option = document.createElement("option");
                             option.text = element.path;
-                            $queryDropdown.add(option);
+                            option.value = element.path;
+                            sel.add(option, null);
                             console.log("Option: " + option);
                             console.log(element.path);
                         });
