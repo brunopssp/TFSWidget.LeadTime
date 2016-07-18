@@ -13,16 +13,10 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             var projectId = VSS.getWebContext().project.id;
             return client.getQueries(projectId).then(function (queries) {
                 //Get query result
-                queries.forEach(function (element) {
+                queries.children.forEach(function (element) {
                     $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
-                    // var sel = document.getElementById("query-path-dropdown");
 
-                    // var option = document.createElement("option");
-                    // option.text = element.path;
-                    // option.value = element.path;
-                    // sel.add(option, null);
-                    console.log("Option: " + option);
-                    console.log(element.path);
+                    console.log("Querypath: " + element.path);
                     $queryDropdown.val(settings.queryDropdown);
                 });
 
@@ -36,21 +30,19 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
                 var settings = JSON.parse(widgetSettings.customSettings.data);
                 if (settings && settings.queryPath) {
-                    console.log("settings: " + settings);
-                    console.log("settings.queryPath: " + settings.queryPath);
                     $queryDropdown.val(settings.queryPath);
                 }
                 //Enable Live Preview
-                $queryDropdown.on("change", function () {
-                    var customSettings = {
-                        data: JSON.stringify({
-                            queryPath: $queryDropdown.val()
-                        })
-                    };
-                    var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
-                    var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
-                    widgetConfigurationContext.notify(eventName, eventArgs);
-                });
+                // $queryDropdown.on("change", function() {
+                //     var customSettings = {
+                //         data: JSON.stringify({
+                //             queryPath: $queryDropdown.val()
+                //         })
+                //     };
+                //     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
+                //     var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
+                //     widgetConfigurationContext.notify(eventName, eventArgs);
+                // });
                 //^^^^^^
                 return getLeadTimeConfig(widgetSettings);
             },
