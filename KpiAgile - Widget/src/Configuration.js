@@ -27,7 +27,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     client.getQuery(projectId, "Shared Queries").then(queries => {
                         //Get query result
                         console.log("Queriespath: " + queries.path);
-                        queries.children.forEach(element => {
+                        queries.forEach(element => {
                             $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
 
                             console.log("Querypath: " + element.path);
