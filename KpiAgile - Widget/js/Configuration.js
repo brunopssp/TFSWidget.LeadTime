@@ -11,7 +11,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
         var getLeadTimeConfig = function getLeadTimeConfig(widgetSettings) {
             var client = TFS_Wit_WebApi.getClient();
             var projectId = VSS.getWebContext().project.id;
-            return client.getQuery(projectId, "Shared Queries").then(function (queries) {
+            return client.getQueries(projectId).then(function (queries) {
                 //Get query result
                 queries.forEach(function (element) {
                     $("<option>" + element.path + "</option>").attr("value", element.path).appendTo($queryDropdown);
@@ -23,6 +23,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     // sel.add(option, null);
                     console.log("Option: " + option);
                     console.log(element.path);
+                    $queryDropdown.val(settings.queryDropdown);
                 });
 
                 return WidgetHelpers.WidgetStatusHelper.Success();
