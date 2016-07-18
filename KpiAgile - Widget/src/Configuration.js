@@ -16,6 +16,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                             var option = document.createElement("option");
                             option.text = element.path;
                             $queryDropdown.add(option);
+                            console.log("Option: " + option);
+                            console.log(element.path);
                         });
 
                         return WidgetHelpers.WidgetStatusHelper.Success();
