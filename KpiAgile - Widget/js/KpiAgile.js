@@ -22,7 +22,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }
             if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
-                $('#query-info-container').empty().text("001");
+                $('#query-info-container').empty().text("");
+                $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                 $('#footer').empty().text("...");
 
                 //Get a tfs query to get it's id
@@ -91,15 +92,11 @@ function DaysBetween(date1, date2) {
 }
 
 function ShowResult() {
-    console.log("ShowResult");
     var sum = 0;
     intLeadTime.forEach(function (item) {
         sum += item;
     });
     var avg = sum / intLeadTime.length;
-
-    console.log("countWorkItems: " + countWorkItems);
-    console.log("intLeadTime.length: " + intLeadTime.length);
 
     if (countWorkItems == intLeadTime.length) {
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
