@@ -13,7 +13,7 @@
         "type": "ms.vss-dashboards-web.widget",
         "targets": [
             "ms.vss-dashboards-web.widget-catalog",
-            "brunosouza.lead-time-extension.LeadTimeMetric.Configuration"
+            ".LeadTimeMetric.Configuration"
         ],
         "properties": {
             "name": "Lead Time Metric",

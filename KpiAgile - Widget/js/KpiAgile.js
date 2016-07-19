@@ -23,6 +23,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 return WidgetHelpers.WidgetStatusHelper.Success();
             }
             if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
+                $('#error').empty();
                 $('h2.title').text("Lead Time");
                 $('#query-info-container').empty().text("");
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
@@ -33,11 +34,36 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     //Get query result
                     client.queryById(query.id).then(function (resultQuery) {
                         //ForEach workItem in query, get the respective Revision
-                        countWorkItems = resultQuery.workItems.length;
                         intLeadTime = new Array();
-                        resultQuery.workItems.forEach(function (workItem) {
-                            client.getRevisions(workItem.id).then(ProcessRevisions);
-                        });
+                        if (resultQuery.queryType == 1) {
+                            countWorkItems = resultQuery.workItems.length;
+                            if (countWorkItems > 0) {
+                                resultQuery.workItems.forEach(function (workItem) {
+                                    client.getRevisions(workItem.id).then(ProcessRevisions);
+                                });
+                            }
+                        } else {
+                            countWorkItems = resultQuery.workItemRelations.length;
+                            if (countWorkItems > 0) {
+                                resultQuery.workItemRelations.forEach(function (workItem) {
+                                    client.getRevisions(workItem.target.id).then(ProcessRevisions);
+                                });
+                            }
+                        }
+                        if (countWorkItems == 0) {
+                            $('#error').empty();
+                            $('h2.title').text(settings.queryPath.substr(15));
+                            $('#query-info-container').empty().text("-");
+                            $('#footer').empty().text("This query does not return any work items");
+                            return WidgetHelpers.WidgetStatusHelper.Success();
+                        }
+                    }, function (error) {
+                        $('#error').text("There is an error in query " + settings.queryPath.substr(15) + ": " + error.message);
+                        // $('h2.title').text(settings.queryPath.substr(15));
+                        // $('#query-info-container').empty().text("-");
+                        // $('#footer').empty().text("There is an error in query: " + error.message);
+
+                        return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
                     });
                     return WidgetHelpers.WidgetStatusHelper.Success();
                 }, function (error) {
@@ -101,6 +127,7 @@ function ShowResult() {
     var avg = sum / intLeadTime.length;
 
     if (countWorkItems == intLeadTime.length) {
+        $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
         $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
         $('#footer').empty().text("Average in Days");

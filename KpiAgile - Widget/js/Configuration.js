@@ -11,7 +11,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
 
         return {
             load: function load(widgetSettings, widgetConfigurationContext) {
-
                 var settings = JSON.parse(widgetSettings.customSettings.data);
                 if (settings && settings.queryPath) {
                     $queryDropdown.val(settings.queryPath);
@@ -24,13 +23,13 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     queries.children.forEach(function (rootFolderQuery) {
                         if (rootFolderQuery.hasChildren == undefined) {
                             $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
-                            $queryDropdown.val(settings.queryDropdown);
+                            $queryDropdown.val(settings.queryPath);
                         }
                         if (rootFolderQuery.hasChildren == true) {
                             rootFolderQuery.children.forEach(function (subFolderQuery) {
                                 if (subFolderQuery.hasChildren == undefined) {
                                     $("<option>" + subFolderQuery.path + "</option>").attr("value", subFolderQuery.path).appendTo($queryDropdown);
-                                    $queryDropdown.val(settings.queryDropdown);
+                                    $queryDropdown.val(settings.queryPath);
                                 }
                             });
                         }
@@ -50,10 +49,9 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 //^^^^^^
                 return WidgetHelpers.WidgetStatusHelper.Success();
             },
-            function: function _function(error) {
-                return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-            },
-
+            // function(error) {
+            //     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
+            //},
             onSave: function onSave() {
                 var customSettings = {
                     data: JSON.stringify({
