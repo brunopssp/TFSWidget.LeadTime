@@ -4,3 +4,4 @@ packages
 *.vsix
 obj
 widgets
+/KpiAgile/KpiAgile/publish

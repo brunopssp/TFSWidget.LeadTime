@@ -11,6 +11,10 @@ namespace KpiAgile
 {
     class Program
     {
+
+        private static string _teamProjectName = "PortalTjsp";
+        private static string _collectionUri = "http://tfs.tjsp.jus.br:8080/tfs/SistemasTJSP";
+
         static void Main(string[] args)
         {
             string strStartStage = "Cópia e Ajustes";
@@ -23,7 +27,7 @@ namespace KpiAgile
             Console.WriteLine("De: {0} Até: {1}", strStartStage, strSecondStage + " [1]");
             Console.WriteLine("De: {0} Até: {1}", strStartStage, strThirdStage + " [2]");
             Console.WriteLine("De: {0} Até: {1}", strStartStage, strLastStage + " [3]");
-            Console.WriteLine("De: {0} Até: {1}", strSecondStage, strThirdStage+" [4]");
+            Console.WriteLine("De: {0} Até: {1}", strSecondStage, strThirdStage + " [4]");
             string strOpt = Console.ReadLine();
 
             switch (strOpt)
@@ -50,14 +54,18 @@ namespace KpiAgile
         public static void CycleTime(string startFieldValue, string endFieldValue)
         {
             WorkItemTrackingHttpClient witClient;
-            WorkItemQueryResult result = GetQueryResult(out witClient);
+            WorkItemQueryResult result = GetQueryResult(out witClient, "Força Tarefa", "Páginas Estáticas");
             if (result.WorkItems.Any())
             {
                 List<WorkItem> workItems = witClient.GetWorkItemsAsync(result.WorkItems.Select(wir => wir.Id)).Result;
+                //--Regra Geral--//
+                //List<decimal> decTempoPorPBI = new List<decimal>();
+                //--------------//
+                #region Migração
                 List<decimal> decPaginasPorDia = new List<decimal>();
                 List<decimal> decTempoPorPagina = new List<decimal>();
                 List<decimal> nTotalPaginas = new List<decimal>();
-
+                #endregion
                 string fieldName = "System.BoardColumn";
 
                 foreach (WorkItem workItem in workItems)
@@ -82,16 +90,36 @@ namespace KpiAgile
                                 decimal horasUteis = ((Convert.ToDecimal(difDate.TotalHours)) - GetNumberOfWorkingHours(dtStart, dtEnd));
                                 decimal nPaginas = Convert.ToDecimal(workItemsRevisions.Last().Fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
 
+                                #region Migração
+                                //--Regra Migração--//
                                 decPaginasPorDia.Add(nPaginas / (horasUteis / 24));
                                 decTempoPorPagina.Add(horasUteis / nPaginas);
-                                ///------------------------------------///
-
                                 nTotalPaginas.Add(nPaginas);
+                                ///-------------///
+                                #endregion
+
+                                #region Regra Geral
+                                //--Regra Geral--//
+                                //decimal horasUteis = ((Convert.ToDecimal(difDate.TotalHours)) - GetNumberOfWorkingHours(dtStart, dtEnd));
+                                //decTempoPorPBI.Add(horasUteis);
+                                ///-------------///
+                                #endregion
+
                                 Console.WriteLine("{0} {1}", workItem.Id, workItem.Fields["System.Title"]);
                             }
                         }
                     }
                 }
+                #region Regra Geral
+                //--Regra Geral--//
+                //TimeSpan tsTempoPorPBI = DateTimeOffset.Now.AddHours(Convert.ToDouble(Math.Round(decTempoPorPBI.Average(), 2))) - DateTimeOffset.Now;
+                //Console.WriteLine("=======================================================");
+                //Console.WriteLine("De: {0} Até: {1}", startFieldValue, endFieldValue);
+                //Console.WriteLine("Quantidade de PBIs: {0}", decTempoPorPBI.Count);//Throughput
+                //Console.WriteLine("Média de tempo gasto por PBI: {0}", tsTempoPorPBI.ToString());//CycleTime
+                ///-------------///
+                #endregion
+                #region Migração
                 if (decPaginasPorDia.Count > 0)
                 {
 
@@ -104,6 +132,7 @@ namespace KpiAgile
                     Console.WriteLine("Média de tempo (em horas) gasto por página: {0}", tsTempoPorPagina.ToString());
                     Console.WriteLine("Média de {0} páginas por dia", Math.Round(decPaginasPorDia.Average(), 2));
                 }
+                #endregion
             }
             else
             {
@@ -126,49 +155,30 @@ namespace KpiAgile
             return hour;
         }
 
-        private static WorkItemQueryResult GetQueryResult(out WorkItemTrackingHttpClient witClient)
+        private static WorkItemQueryResult GetQueryResult(out WorkItemTrackingHttpClient witClient, string queryNameOrSubFolder, string queryName = "")
         {
-            //string collectionUri = "http://vsalm:8080/tfs/FabrikamFiberCollection";
-            string collectionUri = "http://tfs.tjsp.jus.br:8080/tfs/SistemasTJSP";
-            string teamProjectName = "PortalTjsp";
-            //string teamProjectName = "FabrikamFiber";
-            // Create a connection object, which we will use to get httpclient objects.  This is more robust
-            // then newing up httpclient objects directly.  Be sure to send in the full collection uri.
-            // For example:  http://myserver:8080/tfs/defaultcollection
-            // We are using default VssCredentials which uses NTLM against a Team Foundation Server.  See additional provided
-            // examples for creating credentials for other types of authentication.
-            VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
+            VssConnection connection = new VssConnection(new Uri(_collectionUri), new VssCredentials());
 
             // Create instance of WorkItemTrackingHttpClient using VssConnection
             witClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            // WorkItemQueryResult result = GetQuery(teamProjectName, witClient);
-
-
-
             // Get 2 levels of query hierarchy items
-            List<QueryHierarchyItem> queryHierarchyItems = witClient.GetQueriesAsync(teamProjectName, depth: 2).Result;
+            List<QueryHierarchyItem> queryHierarchyItems = witClient.GetQueriesAsync(_teamProjectName, depth: 2).Result;
 
-            // Search for 'My Queries' folder
+            // Search for 'Shared Queries' folder
             QueryHierarchyItem myQueriesFolder = queryHierarchyItems.FirstOrDefault(qhi => qhi.Name.Equals("Shared Queries"));
             if (myQueriesFolder != null)
             {
-
-                string queryNameorFolder = "Força Tarefa";
-                string queryName = "Páginas Estáticas";
-
-                // See if our 'REST Sample' query already exists under 'My Queries' folder.
                 QueryHierarchyItem leadTimeQuery = null;
                 if (myQueriesFolder.Children != null)
                 {
-                    leadTimeQuery = myQueriesFolder.Children.FirstOrDefault(qhi => qhi.Name.Equals(queryNameorFolder));
+                    leadTimeQuery = myQueriesFolder.Children.FirstOrDefault(qhi => qhi.Name.Equals(queryNameOrSubFolder));
                     if (leadTimeQuery.HasChildren == true)
                     {
                         leadTimeQuery = leadTimeQuery.Children.FirstOrDefault(qhi => qhi.Name.Equals(queryName));
                     }
                 }
 
-                // run the 'REST Sample' query
                 return witClient.QueryByIdAsync(leadTimeQuery.Id).Result;
             }
 
