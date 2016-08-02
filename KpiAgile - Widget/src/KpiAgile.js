@@ -1,6 +1,7 @@
 var intLeadTime = new Array();
 var countWorkItems = 0;
 var settings = null;
+
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -11,7 +12,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
         WidgetHelpers.IncludeWidgetStyles();
         VSS.register("LeadTimeMetric", function() {
             var getLeadTime = function(widgetSettings) {
-
 
                 // Get a WIT client to make REST calls to VSTS
                 var client = TFS_Wit_WebApi.getClient();
@@ -35,7 +35,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                             client.queryById(query.id).then(resultQuery => {
                                     //ForEach workItem in query, get the respective Revision
                                     intLeadTime = new Array();
-                                    if (resultQuery.queryType == 1) {
+                                    if (resultQuery.queryType == 1) { //flat query
                                         countWorkItems = resultQuery.workItems.length;
                                         if (countWorkItems > 0) {
                                             resultQuery.workItems.forEach(workItem => {
@@ -105,9 +105,37 @@ function ProcessRevisions(workItem) {
     var dateApproved = (RevApproved != null && RevApproved.fields != undefined) ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
     var dateDone = (RevDone != null && RevDone.fields != undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
-    intLeadTime.push(DaysBetween(dateApproved, dateDone));
+    //Throughput - Range date
+    var dtStartThroughput;
+    var dtEndThroughput;
+    if (dtStartThroughput > dateApproved) {
+        dtStartThroughput = dateApproved;
+    }
+    if (dtEndThroughput < dateDone) {
+        dtEndThroughput = dateDone;
+    }
 
-    ShowResult();
+
+    //intLeadTime.push(DaysBetween(dtStartThroughput, dtEndThroughput));
+    intLeadTime.push(1);
+
+    //ShowResult();
+    if (countWorkItems == intLeadTime.length) {
+        var tsIntervaloTotal = DaysBetween(dtStartThroughput, dtEndThroughput)
+
+        // var sum = 0;
+        // intLeadTime.forEach(item => {
+        //     sum += item;
+        // });
+        //var avg = (sum / intLeadTime.length);
+        var avg = (intLeadTime.length / tsIntervaloTotal);
+
+
+        $('#error').empty();
+        $('h2.title').text(settings.queryPath.substr(15));
+        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
+        $('#footer').empty().text("Average in Days");
+    }
 }
 
 function DaysBetween(date1, date2) {
@@ -123,19 +151,4 @@ function DaysBetween(date1, date2) {
 
     // Convert back to days and return
     return Math.round(difference_ms / one_day);
-}
-
-function ShowResult() {
-    var sum = 0;
-    intLeadTime.forEach(item => {
-        sum += item;
-    });
-    var avg = (sum / intLeadTime.length);
-
-    if (countWorkItems == intLeadTime.length) {
-        $('#error').empty();
-        $('h2.title').text(settings.queryPath.substr(15));
-        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
-        $('#footer').empty().text("Average in Days");
-    }
 }
