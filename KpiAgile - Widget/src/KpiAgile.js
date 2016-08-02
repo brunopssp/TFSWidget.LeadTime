@@ -106,8 +106,8 @@ function ProcessRevisions(workItem) {
     var dateDone = (RevDone != null && RevDone.fields != undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
     //Throughput - Range date
-    var dtStartThroughput;
-    var dtEndThroughput;
+    var dtStartThroughput = new Date();
+    var dtEndThroughput = new Date();;
     if (dtStartThroughput > dateApproved) {
         dtStartThroughput = dateApproved;
     }
@@ -144,7 +144,7 @@ function DaysBetween(date1, date2) {
 
     // Convert both dates to milliseconds
     var date1_ms = date1.getTime();
-    var date2_ms = date2.getTime();
+    var date2_ms = date2.getTime(); //
 
     // Calculate the difference in milliseconds
     var difference_ms = date2_ms - date1_ms;
