@@ -107,7 +107,7 @@ function ProcessRevisions(workItem) {
 
     //Throughput - Range date
     var dtStartThroughput = new Date();
-    var dtEndThroughput = new Date();;
+    var dtEndThroughput = new Date(1969);
     if (dtStartThroughput > dateApproved) {
         dtStartThroughput = dateApproved;
     }
