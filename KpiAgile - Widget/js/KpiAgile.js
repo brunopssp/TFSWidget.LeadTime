@@ -130,26 +130,24 @@ function ShowResult() {
         $('h2.title').text(settings.queryPath.substr(15));
 
         // var throughput = (intLeadTime.length / tsIntervaloTotal);
-        //$('div.subtitle').text("Throughput");
 
         // $('#query-info-container').empty().html(Math.round(throughput * 100) / 100);
-        // $('#footer').empty().text("Items per Day");
+        // $('#footer').empty().text("(Throughput) Items per Day");
         // // var perWeek = intLeadTime.length / (Math.round((tsIntervaloTotal / 7)* 10) / 10);
         // // $('#query-info-container').empty().html(perWeek);
-        // // $('#footer').empty().text("Items per Week");
+        // // $('#footer').empty().text("(Throughput) Items per Week");
 
         var cycleTime = tsIntervaloTotal / intLeadTime.length;
-        $('div.subtitle').text("Cycle Time");
         $('#query-info-container').empty().html(Math.round(cycleTime * 100) / 100);
-        $('#footer').empty().text("Days per Item");
+        $('#footer').empty().text("(Cycle Time) Days per Item");
 
         // var leadTime = (intLeadTime.length / tsIntervaloTotal);
         // $('div.subtitle').text("Lead Time");//
 
         // $('#query-info-container').empty().html(Math.round(leadTime * 100) / 100);
-        // $('#footer').empty().text("Average in Days");
+        // $('#footer').empty().text("(Lead Time)Average in Days");
 
-        // $('#footer').empty().text("Average in Days");
+        // $('#footer').empty().text("(Lead Time) Average in Days");
     }
 }
 
