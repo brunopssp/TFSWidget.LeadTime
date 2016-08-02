@@ -92,7 +92,10 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
 function ProcessRevisions(workItem) {
 
-    if (workItem[workItem.length - 1].fields["System.State"] != "Done") return;
+    if (workItem[workItem.length - 1].fields["System.State"] != "Done") {
+        intLeadTime.push(1);
+        return;
+    }
     var RevApproved = workItem.find(function (workItemRevision) {
         return workItemRevision.fields["System.State"] == "Approved";
     });
