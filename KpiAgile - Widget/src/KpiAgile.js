@@ -136,7 +136,7 @@ function ShowResult() {
 
         // var throughput = (intLeadTime.length / tsIntervaloTotal);
         //$('div.subtitle').text("Throughput");
-        
+
         // $('#query-info-container').empty().html(Math.round(throughput * 100) / 100);
         // $('#footer').empty().text("Items per Day");
         // // var perWeek = intLeadTime.length / (Math.round((tsIntervaloTotal / 7)* 10) / 10);
@@ -149,8 +149,8 @@ function ShowResult() {
         $('#footer').empty().text("Days per Item");
 
         // var leadTime = (intLeadTime.length / tsIntervaloTotal);
-        // $('div.subtitle').text("Lead Time");
-        
+        // $('div.subtitle').text("Lead Time");//
+
         // $('#query-info-container').empty().html(Math.round(leadTime * 100) / 100);
         // $('#footer').empty().text("Average in Days");
 
