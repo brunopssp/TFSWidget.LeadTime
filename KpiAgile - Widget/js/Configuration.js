@@ -1,5 +1,7 @@
 "use strict";
 
+var $queryDropdown = $("#query-path-dropdown");
+
 VSS.init({
     explicitNotifyLoaded: true,
     usePlatformStyles: true
@@ -7,8 +9,6 @@ VSS.init({
 
 VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", "TFS/WorkItemTracking/Contracts"], function (WidgetHelpers, TFS_Wit_WebApi, TFS_contracts) {
     VSS.register("LeadTimeMetric.Configuration", function () {
-        var $queryDropdown = $("#query-path-dropdown");
-
         return {
             load: function load(widgetSettings, widgetConfigurationContext) {
                 var settings = JSON.parse(widgetSettings.customSettings.data);
@@ -18,23 +18,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
 
                 var client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
-                client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(function (queries) {
-                    //Get query result
-                    queries.children.forEach(function (rootFolderQuery) {
-                        if (rootFolderQuery.hasChildren == undefined) {
-                            $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
-                            $queryDropdown.val(settings.queryPath);
-                        }
-                        if (rootFolderQuery.hasChildren == true) {
-                            rootFolderQuery.children.forEach(function (subFolderQuery) {
-                                if (subFolderQuery.hasChildren == undefined) {
-                                    $("<option>" + subFolderQuery.path + "</option>").attr("value", subFolderQuery.path).appendTo($queryDropdown);
-                                    $queryDropdown.val(settings.queryPath);
-                                }
-                            });
-                        }
-                    });
-                });
+                client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
+
                 //Enable Live Preview
                 $queryDropdown.on("change", function () {
                     var customSettings = {
@@ -64,4 +49,26 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
     });
     VSS.notifyLoadSucceeded();
 });
+
+function getListQueries(queries) {
+    //Get query result
+    queries.children.forEach(function (rootFolderQuery) {
+        if (rootFolderQuery.hasChildren == undefined) {
+            setDropDownList(rootFolderQuery);
+        }
+        if (rootFolderQuery.hasChildren == true) {
+            rootFolderQuery.children.forEach(function (subFolderQuery) {
+                if (subFolderQuery.hasChildren == undefined) {
+                    setDropDownList(subFolderQuery);
+                }
+            });
+        }
+    });
+}
+
+function setDropDownList(rootFolderQuery) {
+    //Set results to DropDownList
+    $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
+    $queryDropdown.val(settings.queryPath);
+}
 //# sourceMappingURL=Configuration.js.map

@@ -3,6 +3,7 @@ var countWorkItems = 0;
 var settings = null;
 var dtStartThroughput = new Date();
 var dtEndThroughput = new Date(1969);
+var client;
 
 VSS.init({
     explicitNotifyLoaded: true,
@@ -16,7 +17,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             var getLeadTime = function(widgetSettings) {
 
                 // Get a WIT client to make REST calls to VSTS
-                var client = TFS_Wit_WebApi.getClient();
+                client = TFS_Wit_WebApi.getClient();
                 var projectId = VSS.getWebContext().project.id;
                 settings = JSON.parse(widgetSettings.customSettings.data);
                 if (!settings || !settings.queryPath) {
@@ -34,42 +35,11 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     //Get a tfs query to get it's id
                     return client.getQuery(projectId, settings.queryPath).then(query => {
                             //Get query result
-                            client.queryById(query.id).then(resultQuery => {
-                                    //ForEach workItem in query, get the respective Revision
-                                    intLeadTime = new Array();
-                                    if (resultQuery.queryType == 1) { //flat query
-                                        countWorkItems = resultQuery.workItems.length;
-                                        if (countWorkItems > 0) {
-                                            resultQuery.workItems.forEach(workItem => {
-                                                client.getRevisions(workItem.id).then(ProcessRevisions);
-                                            });
-                                        }
-                                    } else {
-                                        countWorkItems = resultQuery.workItemRelations.length;
-                                        if (countWorkItems > 0) {
-                                            resultQuery.workItemRelations.forEach(workItem => {
-                                                client.getRevisions(workItem.target.id).then(ProcessRevisions);
-                                            });
-                                        }
-                                    }
-                                    if (countWorkItems == 0) {
-                                        $('#error').empty();
-                                        $('h2.title').text(settings.queryPath.substr(15));
-                                        $('#query-info-container').empty().text("-");
-                                        $('#footer').empty().text("This query does not return any work items");
-                                        return WidgetHelpers.WidgetStatusHelper.Success();
-                                    }
-
-                                },
+                            client.queryById(query.id).then(ResultQuery,
                                 function(error) {
                                     $('#error').text("There is an error in query " + settings.queryPath.substr(15) + ": " + error.message);
-                                    // $('h2.title').text(settings.queryPath.substr(15));
-                                    // $('#query-info-container').empty().text("-");
-                                    // $('#footer').empty().text("There is an error in query: " + error.message);
-
                                     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-                                }
-                            );
+                                });
                             return WidgetHelpers.WidgetStatusHelper.Success();
                         },
                         function(error) {
@@ -93,6 +63,34 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
         VSS.notifyLoadSucceeded();
     }
 );
+
+function ResultQuery(resultQuery) {
+
+    //ForEach workItem in query, get the respective Revision
+    //intLeadTime = new Array();
+    if (resultQuery.queryType == 1) { //flat query
+        countWorkItems = resultQuery.workItems.length;
+        if (countWorkItems > 0) {
+            resultQuery.workItems.forEach(workItem => {
+                client.getRevisions(workItem.id).then(ProcessRevisions);
+            });
+        }
+    } else {
+        countWorkItems = resultQuery.workItemRelations.length;
+        if (countWorkItems > 0) {
+            resultQuery.workItemRelations.forEach(workItem => {
+                client.getRevisions(workItem.target.id).then(ProcessRevisions);
+            });
+        }
+    }
+    if (countWorkItems == 0) {
+        $('#error').empty();
+        $('h2.title').text(settings.queryPath.substr(15));
+        $('#query-info-container').empty().text("-");
+        $('#footer').empty().text("This query does not return any work items");
+        return WidgetHelpers.WidgetStatusHelper.Success();
+    }
+}
 
 function ProcessRevisions(workItem) {
 
