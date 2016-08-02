@@ -134,13 +134,13 @@ function ShowResult() {
         $('h2.title').text(settings.queryPath.substr(15));
 
 
-        var throughput = (intLeadTime.length / tsIntervaloTotal);
-        $('#query-info-container').empty().html(Math.round(throughput * 10) / 10);
-        $('#footer').empty().text("Items per Day");
+        // var throughput = (intLeadTime.length / tsIntervaloTotal);
+        // $('#query-info-container').empty().html(Math.round(throughput * 10) / 10);
+        // $('#footer').empty().text("Items per Day");
 
-        // var cycleTime = (tsIntervaloTotal / intLeadTime.length);
-        // $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
-        // $('#footer').empty().text("Days per Item");
+        var cycleTime = (tsIntervaloTotal / intLeadTime.length);
+        $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
+        $('#footer').empty().text("Days per Item");
 
         // var leadTime = (intLeadTime.length / tsIntervaloTotal);
         // $('#query-info-container').empty().html(Math.round(leadTime * 10) / 10);
