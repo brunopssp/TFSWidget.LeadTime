@@ -1,4 +1,5 @@
- var $queryDropdown = $("#query-path-dropdown");
+ var queryDropdown = $("#query-path-dropdown");
+ var optionsMetric = $("#optionsMetric");
 
  VSS.init({
      explicitNotifyLoaded: true,
@@ -11,19 +12,19 @@
              return {
                  load: function(widgetSettings, widgetConfigurationContext) {
                      var settings = JSON.parse(widgetSettings.customSettings.data);
-                     if (settings && settings.queryPath) {
-                         $queryDropdown.val(settings.queryPath);
+                     if (settings && settings.queryPath && settings.metric) {
+                         queryDropdown.val(settings.queryPath);
+                         optionsMetric.val(settings.metric);
                      }
 
-                     var client = TFS_Wit_WebApi.getClient();
-                     var projectId = VSS.getWebContext().project.id;
-                     client.getQuery(projectId, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
+                     TFS_Wit_WebApi.getClient().getQuery(VSS.getWebContext().project.id, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
 
                      //Enable Live Preview
-                     $queryDropdown.on("change", function() {
+                     queryDropdown.on("change", function() {
                          var customSettings = {
                              data: JSON.stringify({
-                                 queryPath: $queryDropdown.val()
+                                 queryPath: queryDropdown.val(),
+                                 metric: optionsMetric.val()
                              })
                          };
                          var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
@@ -39,7 +40,8 @@
                  onSave: function() {
                      var customSettings = {
                          data: JSON.stringify({
-                             queryPath: $queryDropdown.val()
+                             queryPath: queryDropdown.val(),
+                             metric: optionsMetric.val()
                          })
                      };
                      return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings);
@@ -68,6 +70,6 @@
 
  function setDropDownList(rootFolderQuery) {
      //Set results to DropDownList
-     $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($queryDropdown);
-     $queryDropdown.val(settings.queryPath);
+     $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo(queryDropdown);
+     queryDropdown.val(settings.queryPath);
  }
