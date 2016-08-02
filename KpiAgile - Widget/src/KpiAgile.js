@@ -1,6 +1,8 @@
 var intLeadTime = new Array();
 var countWorkItems = 0;
 var settings = null;
+var dtStartThroughput = new Date();
+var dtEndThroughput = new Date(1969);
 
 VSS.init({
     explicitNotifyLoaded: true,
@@ -106,8 +108,6 @@ function ProcessRevisions(workItem) {
     var dateDone = (RevDone != null && RevDone.fields != undefined) ? new Date(RevDone.fields["System.ChangedDate"]) : new Date();
 
     //Throughput - Range date
-    var dtStartThroughput = new Date();
-    var dtEndThroughput = new Date(1969);
     if (dtStartThroughput > dateApproved) {
         dtStartThroughput = dateApproved;
     }
@@ -115,11 +115,12 @@ function ProcessRevisions(workItem) {
         dtEndThroughput = dateDone;
     }
 
-
-    //intLeadTime.push(DaysBetween(dtStartThroughput, dtEndThroughput));
     intLeadTime.push(1);
 
-    //ShowResult();
+    ShowResult();
+}
+
+function ShowResult() {
     if (countWorkItems == intLeadTime.length) {
         var tsIntervaloTotal = DaysBetween(dtStartThroughput, dtEndThroughput)
 
@@ -128,13 +129,24 @@ function ProcessRevisions(workItem) {
         //     sum += item;
         // });
         //var avg = (sum / intLeadTime.length);
-        var avg = (intLeadTime.length / tsIntervaloTotal);
-
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
-        $('#query-info-container').empty().html(Math.round(avg * 10) / 10);
-        $('#footer').empty().text("Average in Days");
+
+
+        var throughput = (intLeadTime.length / tsIntervaloTotal);
+        $('#query-info-container').empty().html(Math.round(throughput * 10) / 10);
+        $('#footer').empty().text("Items per Day");
+
+        // var cycleTime = (tsIntervaloTotal / intLeadTime.length);
+        // $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
+        // $('#footer').empty().text("Days per Item");
+
+        // var leadTime = (intLeadTime.length / tsIntervaloTotal);
+        // $('#query-info-container').empty().html(Math.round(leadTime * 10) / 10);
+        // $('#footer').empty().text("Average in Days");
+
+        // $('#footer').empty().text("Average in Days");
     }
 }
 
