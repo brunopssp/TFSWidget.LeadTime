@@ -1,6 +1,7 @@
 "use strict";
 
 var intLeadTime = new Array();
+var nWIP = new Array();
 var countWorkItems = 0;
 var settings = null;
 var dtStartThroughput = new Date();
@@ -116,6 +117,9 @@ function ProcessRevisions(workItem) {
     }
 
     intLeadTime.push(1);
+    if (workItem.Fields["System.State"] != "Done") {
+        nWIP.Add(1);
+    }
 
     ShowResult();
 }
@@ -127,23 +131,28 @@ function ShowResult() {
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
 
+        var cycleTime = tsIntervaloTotal / intLeadTime.length;
+
+        var sumWIP = 0;
+        nWIP.forEach(function (item) {
+            sumWIP += item;
+        });
         if (settings.metric == "cycletime") {
-            var cycleTime = tsIntervaloTotal / intLeadTime.length;
-            $('#query-info-container').empty().html(Math.round(cycleTime * 100) / 100);
+
+            $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
             $('#footer').empty().text("(Cycle Time) Days per Item");
         } else if (settings.metric == "throughput") {
             // var throughput = (intLeadTime.length / tsIntervaloTotal);
             // $('#query-info-container').empty().html(Math.round(throughput * 100) / 100);
             // $('#footer').empty().text("(Throughput) Items per Day");
             var throughputPerWeek = intLeadTime.length / (tsIntervaloTotal / 7);
-            $('#query-info-container').empty().html(Math.round(throughputPerWeek * 100) / 100);
+            $('#query-info-container').empty().html(Math.round(throughputPerWeek * 10) / 10);
             $('#footer').empty().text("(Throughput) Items per Week");
+        } else if (settings.metric == "leadtime") {
+            var leadTime = sumWIP * cycleTime; //---"WIP * CycleTime" ou "WIP / Throughput
+            $('#query-info-container').empty().html(Math.round(leadTime * 10) / 10);
+            $('#footer').empty().text("(Lead Time) Estimate in Days");
         }
-        //else if (settings.metric == "leadtime") {
-        // var leadTime = (intLeadTime.length / tsIntervaloTotal);
-        // $('#query-info-container').empty().html(Math.round(leadTime * 100) / 100);
-        // $('#footer').empty().text("(Lead Time) Average in Days");
-        //}
     }
 }
 

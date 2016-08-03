@@ -17,7 +17,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 settings = JSON.parse(widgetSettings.customSettings.data);
                 if (settings && settings.queryPath && settings.metric) {
                     $(queryDropdown).val(settings.queryPath);
-                    if (settings.metric == "throughput") $("input[name=radio]")[0].checked = true;else if (settings.metric == "cycletime") $("input[name=radio]")[1].checked = true;
+                    if (settings.metric == "throughput") $("input[name=radio]")[0].checked = true;else if (settings.metric == "cycletime") $("input[name=radio]")[1].checked = true;else if (settings.metric == "leadtime") $("input[name=radio]")[2].checked = true;
                 }
 
                 TFS_Wit_WebApi.getClient().getQuery(VSS.getWebContext().project.id, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
