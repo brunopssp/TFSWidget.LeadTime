@@ -28,7 +28,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
             }
             if (WidgetHelpers.WidgetEvent.ConfigurationChange) {
                 $('#error').empty();
-                $('h2.title').text("Lead Time");
+                $('h2.title').text("");
                 $('#query-info-container').empty().text("");
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                 $('#footer').empty().text("...");
