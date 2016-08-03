@@ -8,15 +8,20 @@
 
 <body>
     <div class="container">
-        <fieldset>
-            <label class="label">Query: </label>
-            <select id="query-path-dropdown" style="margin-top:10px">	
-			    <option value="" selected disabled hidden>Please select a query</option>
-            </select>
-        </fieldset>
+        <div class="dropdown">
+            <!--<fieldset>-->
+            <label>Query: </label>
+            <!--<label class="label">Query: </label>-->
+            <div class="wrapper">
+                <select id="query-path-dropdown" style="margin-top:10px">	
+			        <option value="" selected disabled hidden>Please select a query</option>
+                </select>
+            </div>
+        </div>
+        <!--</fieldset>-->
         <br/>
         <fieldset class="radio" id="optionsMetric">
-            <legend>Display as </legend>
+            <legend>Select the Metric </legend>
             <input type="radio" id="radio-throughput" value="throughput" name="radio" checked="true">
             <label for="radio-throughput">Throughput</label><br/>
             <input type="radio" id="radio-cycletime" value="cycletime" name="radio">
