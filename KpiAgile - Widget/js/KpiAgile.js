@@ -71,9 +71,6 @@ function ResultQuery(resultQuery) {
         countWorkItems = resultQuery.workItems.length;
         if (countWorkItems > 0) {
             resultQuery.workItems.forEach(function (workItem) {
-                if (workItem.Fields["System.State"] != "Done") {
-                    nWIP.Add(1);
-                }
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
@@ -97,7 +94,7 @@ function ResultQuery(resultQuery) {
 function ProcessRevisions(workItem) {
 
     if (workItem[workItem.length - 1].fields["System.State"] != "Done") {
-        intLeadTime.push(1);
+        nWIP.push(1);
         return;
     }
     var RevApproved = workItem.find(function (workItemRevision) {
@@ -133,10 +130,10 @@ function ShowResult() {
 
         var cycleTime = tsIntervaloTotal / intLeadTime.length;
 
-        var sumWIP = 0;
-        nWIP.forEach(function (item) {
-            sumWIP += item;
-        });
+        // var sumWIP = 0;
+        // nWIP.forEach(item => {
+        //     sumWIP += item;
+        // });
         if (settings.metric == "cycletime") {
 
             $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
@@ -149,7 +146,7 @@ function ShowResult() {
             $('#query-info-container').empty().html(Math.round(throughputPerWeek * 10) / 10);
             $('#footer').empty().text("(Throughput) Items per Week");
         } else if (settings.metric == "leadtime") {
-            var leadTime = sumWIP * cycleTime; //---"WIP * CycleTime" ou "WIP / Throughput
+            var leadTime = nWIP.length * cycleTime; //---"WIP * CycleTime" ou "WIP / Throughput
             $('#query-info-container').empty().html(Math.round(leadTime * 10) / 10);
             $('#footer').empty().text("(Lead Time) Estimate in Days");
         }
