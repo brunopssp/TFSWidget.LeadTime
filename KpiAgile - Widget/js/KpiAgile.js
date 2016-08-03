@@ -71,6 +71,9 @@ function ResultQuery(resultQuery) {
         countWorkItems = resultQuery.workItems.length;
         if (countWorkItems > 0) {
             resultQuery.workItems.forEach(function (workItem) {
+                if (workItem.Fields["System.State"] != "Done") {
+                    nWIP.Add(1);
+                }
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
@@ -117,9 +120,6 @@ function ProcessRevisions(workItem) {
     }
 
     intLeadTime.push(1);
-    if (workItem.Fields["System.State"] != "Done") {
-        nWIP.Add(1);
-    }
 
     ShowResult();
 }
