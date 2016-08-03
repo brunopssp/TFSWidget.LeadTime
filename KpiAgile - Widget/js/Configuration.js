@@ -15,18 +15,18 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
             load: function load(widgetSettings, widgetConfigurationContext) {
                 settings = JSON.parse(widgetSettings.customSettings.data);
                 if (settings && settings.queryPath && settings.metric) {
-                    queryDropdown.val(settings.queryPath);
-                    optionsMetric.val(settings.metric);
+                    $(queryDropdown).val(settings.queryPath);
+                    $(optionsMetric).val(settings.metric);
                 }
 
                 TFS_Wit_WebApi.getClient().getQuery(VSS.getWebContext().project.id, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
 
                 //Enable Live Preview
-                queryDropdown.on("change", function () {
+                $(queryDropdown).on("change", function () {
                     var customSettings = {
                         data: JSON.stringify({
-                            queryPath: queryDropdown.val(),
-                            metric: optionsMetric.val()
+                            queryPath: $(queryDropdown).val(),
+                            metric: $(optionsMetric).val()
                         })
                     };
                     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
@@ -42,8 +42,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
             onSave: function onSave() {
                 var customSettings = {
                     data: JSON.stringify({
-                        queryPath: queryDropdown.val(),
-                        metric: optionsMetric.val()
+                        queryPath: $(queryDropdown).val(),
+                        metric: $(optionsMetric).val()
                     })
                 };
                 return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings);
@@ -71,7 +71,7 @@ function getListQueries(queries) {
 
 function setDropDownList(rootFolderQuery) {
     //Set results to DropDownList
-    $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo(queryDropdown);
-    queryDropdown.val(settings.queryPath);
+    $("<option>" + rootFolderQuery.path + "</option>").attr("value", rootFolderQuery.path).appendTo($(queryDropdown));
+    $(queryDropdown).val(settings.queryPath);
 }
 //# sourceMappingURL=Configuration.js.map
