@@ -51,6 +51,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
             return {
                 load: function(widgetSettings) {
+                    // var $title = $('h2.title');
+                    // $title.text('Lead Time');
                     return getLeadTime(widgetSettings);
                 },
                 reload: function(widgetSettings) {
@@ -65,6 +67,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 function ResultQuery(resultQuery) {
 
     //ForEach workItem in query, get the respective Revision
+    intLeadTime = new Array();
     if (resultQuery.queryType == 1) { //flat query
         countWorkItems = resultQuery.workItems.length;
         if (countWorkItems > 0) {
