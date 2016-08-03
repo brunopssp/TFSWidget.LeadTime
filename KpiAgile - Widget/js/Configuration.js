@@ -1,7 +1,7 @@
 "use strict";
 
 var queryDropdown = "#query-path-dropdown";
-var optionsMetric = "input[name=radio]:checked";
+var optionsMetric = "input[name=radio]";
 
 var settings = null;
 
