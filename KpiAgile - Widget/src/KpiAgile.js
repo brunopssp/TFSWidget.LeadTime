@@ -3,7 +3,7 @@ var countWorkItems = 0;
 var settings = null;
 var dtStartThroughput = new Date();
 var dtEndThroughput = new Date(1969);
-var client;
+var client = null;
 
 VSS.init({
     explicitNotifyLoaded: true,

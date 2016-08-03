@@ -1,5 +1,6 @@
  var queryDropdown = ("#query-path-dropdown");
  var optionsMetric = ("#optionsMetric");
+ var settings = null;
 
  VSS.init({
      explicitNotifyLoaded: true,
@@ -11,7 +12,7 @@
          VSS.register("LeadTimeMetric.Configuration", function() {
              return {
                  load: function(widgetSettings, widgetConfigurationContext) {
-                     var settings = JSON.parse(widgetSettings.customSettings.data);
+                     settings = JSON.parse(widgetSettings.customSettings.data);
                      if (settings && settings.queryPath && settings.metric) {
                          queryDropdown.val(settings.queryPath);
                          optionsMetric.val(settings.metric);
