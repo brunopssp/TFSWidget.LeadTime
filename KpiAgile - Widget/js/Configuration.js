@@ -17,8 +17,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 settings = JSON.parse(widgetSettings.customSettings.data);
                 if (settings && settings.queryPath && settings.metric) {
                     $(queryDropdown).val(settings.queryPath);
-                    if (settings.metric == "throughput") $("input[name=radio]")[0].checked = true;
-                    if (settings.metric == "cycletime") $("input[name=radio]")[1].checked = true;
+                    if (settings.metric == "throughput") $("input[name=radio]")[0].checked = true;else if (settings.metric == "cycletime") $("input[name=radio]")[1].checked = true;
                 }
 
                 TFS_Wit_WebApi.getClient().getQuery(VSS.getWebContext().project.id, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
@@ -27,7 +26,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 $(queryDropdown).on("change", function () {
                     var customSettings = {
                         data: JSON.stringify({
-                            queryPath: $(queryDropdown).val()
+                            queryPath: $(queryDropdown).val(),
+                            metric: $(optionsMetric, "#optionsMetric").val()
                         })
                     };
                     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
@@ -37,6 +37,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 $("#optionsMetric input").on("change", function () {
                     var customSettings = {
                         data: JSON.stringify({
+                            queryPath: $(queryDropdown).val(),
                             metric: $(optionsMetric, "#optionsMetric").val()
                         })
                     };
@@ -47,9 +48,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                 //^^^^^^
                 return WidgetHelpers.WidgetStatusHelper.Success();
             },
-            // function(error) {
-            //     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-            //},
             onSave: function onSave() {
                 var customSettings = {
                     data: JSON.stringify({

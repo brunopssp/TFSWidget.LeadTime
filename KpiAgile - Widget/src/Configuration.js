@@ -18,7 +18,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                         $(queryDropdown).val(settings.queryPath);
                         if (settings.metric == "throughput")
                             $("input[name=radio]")[0].checked = true;
-                        if (settings.metric == "cycletime")
+                        else if (settings.metric == "cycletime")
                             $("input[name=radio]")[1].checked = true;
                     }
 
@@ -28,7 +28,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     $(queryDropdown).on("change", function() {
                         var customSettings = {
                             data: JSON.stringify({
-                                queryPath: $(queryDropdown).val()
+                                queryPath: $(queryDropdown).val(),
+                                metric: $(optionsMetric, "#optionsMetric").val()
                             })
                         };
                         var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
@@ -38,6 +39,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     $("#optionsMetric input").on("change", function() {
                         var customSettings = {
                             data: JSON.stringify({
+                                queryPath: $(queryDropdown).val(),
                                 metric: $(optionsMetric, "#optionsMetric").val()
                             })
                         };
@@ -48,9 +50,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     //^^^^^^
                     return WidgetHelpers.WidgetStatusHelper.Success();
                 },
-                // function(error) {
-                //     return WidgetHelpers.WidgetStatusHelper.Failure(error.message);
-                //},
                 onSave: function() {
                     var customSettings = {
                         data: JSON.stringify({
