@@ -1,7 +1,7 @@
 "use strict";
 
-var queryDropdown = $("#query-path-dropdown");
-var optionsMetric = $("#optionsMetric");
+var queryDropdown = "#query-path-dropdown";
+var optionsMetric = "#optionsMetric";
 
 VSS.init({
     explicitNotifyLoaded: true,
