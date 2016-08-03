@@ -1,7 +1,8 @@
 "use strict";
 
 var queryDropdown = "#query-path-dropdown";
-var optionsMetric = "#optionsMetric";
+var optionsMetric = "input[name=radio]:checked";
+
 var settings = null;
 
 VSS.init({
@@ -26,7 +27,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     var customSettings = {
                         data: JSON.stringify({
                             queryPath: $(queryDropdown).val()
-
                         })
                     };
                     var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
