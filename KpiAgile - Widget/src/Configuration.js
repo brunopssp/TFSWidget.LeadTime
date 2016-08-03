@@ -16,7 +16,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     settings = JSON.parse(widgetSettings.customSettings.data);
                     if (settings && settings.queryPath && settings.metric) {
                         $(queryDropdown).val(settings.queryPath);
-                        $(optionsMetric).val(settings.metric);
+                        $(optionsMetric, "#optionsMetric").val(settings.metric);
                     }
 
                     TFS_Wit_WebApi.getClient().getQuery(VSS.getWebContext().project.id, "Shared Queries", TFS_contracts.QueryExpand.None, 2).then(getListQueries);
@@ -32,10 +32,10 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                         var eventArgs = WidgetHelpers.WidgetEvent.Args(customSettings);
                         widgetConfigurationContext.notify(eventName, eventArgs);
                     });
-                    $(optionsMetric).on("change", function() {
+                    $("#optionsMetric input").on("change", function() {
                         var customSettings = {
                             data: JSON.stringify({
-                                metric: $(optionsMetric).val()
+                                metric: $(optionsMetric, "#optionsMetric").val()
                             })
                         };
                         var eventName = WidgetHelpers.WidgetEvent.ConfigurationChange;
@@ -52,7 +52,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                     var customSettings = {
                         data: JSON.stringify({
                             queryPath: $(queryDropdown).val(),
-                            metric: $(optionsMetric).val()
+                            metric: $(optionsMetric, "#optionsMetric").val()
                         })
                     };
                     return WidgetHelpers.WidgetConfigurationSave.Valid(customSettings);
