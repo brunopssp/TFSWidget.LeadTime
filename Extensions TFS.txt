@@ -5,3 +5,7 @@ https://www.visualstudio.com/en-us/docs/integrate/extensions/reference/client/ap
 https://www.visualstudio.com/en-us/docs/integrate/api/wit/revisions
 http://www.w3schools.com/js/default.asp
 
+
+http://www.iconarchive.com/show/stock-style-3-icons-by-hamzasaleem/Time-Machine-icon.html
+
+

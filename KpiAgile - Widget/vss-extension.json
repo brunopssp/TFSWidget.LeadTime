@@ -4,6 +4,30 @@
     "version": "1.0.0",
     "name": "Lead Time Metric",
     "description": "Get the Lead Time of a set of Work Items in a specific query",
+    "icons": {
+        "default": "img/Time-Machine-icon.png"
+    },
+    "categories": [
+        "Plan and track"
+    ],
+    "tags": [
+        "working",
+        "lead time",
+        "cycle time",
+        "throughput",
+        "agile",
+        "kanban",
+        "lean"
+    ],
+    "branding": {
+        "color": "rgb(116, 51, 147)",
+        "theme": "dark"
+    },
+    "content": {
+        "details": {
+            "path": "overview.md"
+        }
+    },
     "publisher": "brunosouza",
     "targets": [{
         "id": "Microsoft.VisualStudio.Services"
