@@ -5,3 +5,5 @@ packages
 obj
 widgets
 /KpiAgile/KpiAgile/publish
+*.suo
+.vs
