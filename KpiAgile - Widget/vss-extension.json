@@ -10,7 +10,7 @@ Please note: None of the conditions outlined in the disclaimer above will superc
 {
     "manifestVersion": 1,
     "id": "lead-time-extension",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "name": "Lead Time Metric",
     "description": "Get the Lead Time of a set of Work Items in a specific query",
     "icons": {
