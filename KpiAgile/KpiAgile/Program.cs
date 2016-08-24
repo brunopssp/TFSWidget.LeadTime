@@ -97,10 +97,16 @@ namespace KpiAgile
 
                     #region Throughput - WIP
 
-                    if (!workItem.Fields[fieldName].Equals(strLastStage) && !workItem.Fields[fieldName].Equals("0.Novo") && !workItem.Fields[fieldName].Equals("1.Categorizado"))
+                    if (!workItem.Fields[fieldName].Equals(strLastStage) && !workItem.Fields[fieldName].Equals("0.Novo") && !workItem.Fields[fieldName].Equals("1.Categorizado") 
+                        && workItem.Fields.Any(s => s.Key.Equals("Microsoft.VSTS.Scheduling.OriginalEstimate")))
                     {
+                        
                         double nPaginasWIP = Convert.ToDouble(workItem.Fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
                         nWIP.Add(nPaginasWIP);//Throughput
+                    }
+                    if (workItem.Id == 14425)
+                    {
+                        continue;
                     }
 
                     #endregion
@@ -128,7 +134,8 @@ namespace KpiAgile
 
                     //excluir PBIS prontos fora do intervalo
                     //if (dtEnd < new DateTime(2016, 8, 8) || dtEnd > new DateTime(2016, 8, 11))
-                    //if (dtEnd > new DateTime(2016, 8, 8))
+
+                    //if (dtEnd > new DateTime(2016, 8, 13))
                     //    continue;
 
                     if (dtStartThroughput > dtStart)

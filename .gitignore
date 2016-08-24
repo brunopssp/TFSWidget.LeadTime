@@ -6,4 +6,4 @@ obj
 widgets
 /KpiAgile/KpiAgile/publish
 *.suo
-.vs
+/KpiAgile/.vs

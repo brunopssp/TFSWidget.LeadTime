@@ -31,8 +31,9 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 $('#error').empty();
                 $('h2.title').text("");
                 $('#query-info-container').empty().text("");
+                $('#widget').css('background-color', 'rgb(0, 0, 0)');
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
-                $('#footer').empty().text("...");
+                $('#footer').empty().text("");
 
                 //Get a tfs query to get it's id
                 return client.getQuery(projectId, settings.queryPath).then(function (query) {
@@ -50,8 +51,6 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 
         return {
             load: function load(widgetSettings) {
-                // var $title = $('h2.title');
-                // $title.text('Lead Time');
                 return getLeadTime(widgetSettings);
             },
             reload: function reload(widgetSettings) {
@@ -71,6 +70,10 @@ function ResultQuery(resultQuery) {
         countWorkItems = resultQuery.workItems.length;
         if (countWorkItems > 0) {
             resultQuery.workItems.forEach(function (workItem) {
+                //Validations
+                if (workItem.fields["System.State"] == "New") {
+                    return;
+                }
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
@@ -91,17 +94,32 @@ function ResultQuery(resultQuery) {
     }
 }
 
-function ProcessRevisions(workItem) {
+function ProcessRevisions(revisions) {
 
-    if (workItem[workItem.length - 1].fields["System.State"] != "Done") {
+    //Count WIP
+    if (revisions[revisions.length - 1].fields["System.State"] != "Done") {
         nWIP.push(1);
         return;
     }
-    var RevApproved = workItem.find(function (workItemRevision) {
+
+    //Validations
+    if (revisions.some(function (s) {
+        return s.Fields["System.State"] != "Approved";
+    })) //Valida se o PBI passou pelo stage Inicial
+        return;
+    if (revisions.some(function (s) {
+        return s.Fields["System.State"] != "Done";
+    })) //Valida se o PBI chegou no stage Final
+        return;
+    if (revisions[revisions.length].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
+        return;
+    //Validations^^^^^^^^
+
+    var RevApproved = revisions.find(function (workItemRevision) {
         return workItemRevision.fields["System.State"] == "Approved";
     });
 
-    var RevDone = workItem.find(function (workItemRevision) {
+    var RevDone = revisions.find(function (workItemRevision) {
         return workItemRevision.fields["System.State"] == "Done";
     });
 
@@ -127,6 +145,7 @@ function ShowResult() {
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
+        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)' });
 
         var cycleTime = tsIntervaloTotal / intLeadTime.length;
 
