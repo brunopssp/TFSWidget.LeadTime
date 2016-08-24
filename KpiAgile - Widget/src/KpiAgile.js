@@ -41,7 +41,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                     $('#error').empty();
                     $('h2.title').text("");
                     $('#query-info-container').empty().text("");
-                    $('#widget').css('background-color', 'rgb(255, 255, 255)');
+                    $('#widget').css({ 'background-color': 'rgb(255, 255, 255)', 'text-align': 'center' });
                     $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                     $('#footer').empty().text("");
 
@@ -169,7 +169,7 @@ function ShowResult() {
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
-        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)', 'text-align': 'center' });
+        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)' });
 
         var cycleTime = (tsIntervaloTotal / intLeadTime.length);
 
