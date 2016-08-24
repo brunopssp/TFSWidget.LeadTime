@@ -31,7 +31,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 $('#error').empty();
                 $('h2.title').text("");
                 $('#query-info-container').empty().text("");
-                $('#widget').css('background-color', 'rgb(0, 0, 0)');
+                $('#widget').css('background-color', 'rgb(255, 255, 255)');
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                 $('#footer').empty().text("");
 
@@ -70,10 +70,6 @@ function ResultQuery(resultQuery) {
         countWorkItems = resultQuery.workItems.length;
         if (countWorkItems > 0) {
             resultQuery.workItems.forEach(function (workItem) {
-                //Validations
-                if (workItem.fields["System.State"] == "New") {
-                    return;
-                }
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
@@ -96,6 +92,9 @@ function ResultQuery(resultQuery) {
 
 function ProcessRevisions(revisions) {
 
+    if (revisions[revisions.length].fields["System.State"] == "New") {
+        return;
+    }
     //Count WIP
     if (revisions[revisions.length - 1].fields["System.State"] != "Done") {
         nWIP.push(1);
@@ -145,7 +144,7 @@ function ShowResult() {
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
-        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)' });
+        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)', 'text-align': 'center' });
 
         var cycleTime = tsIntervaloTotal / intLeadTime.length;
 
