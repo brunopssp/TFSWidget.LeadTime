@@ -104,7 +104,7 @@ function ResultQuery(resultQuery) {
 
 function ProcessRevisions(revisions) {
 
-    if (revisions[revisions.length].fields["System.State"] == "New") {
+    if (revisions[revisions.length - 1].fields["System.State"] == "New") {
         return;
     }
     //Count WIP
@@ -118,7 +118,7 @@ function ProcessRevisions(revisions) {
         return;
     if (revisions.some(s => s.Fields["System.State"] != "Done")) //Valida se o PBI chegou no stage Final
         return;
-    if (revisions[revisions.length].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
+    if (revisions[revisions.length - 1].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
         return;
     //Validations^^^^^^^^
 
