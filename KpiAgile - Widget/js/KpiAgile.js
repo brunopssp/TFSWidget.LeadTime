@@ -171,7 +171,7 @@ function ShowResult() {
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
-        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)' });
+        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)', 'text-align': 'left' });
 
         var cycleTime = tsIntervaloTotal / intLeadTime.length;
 
