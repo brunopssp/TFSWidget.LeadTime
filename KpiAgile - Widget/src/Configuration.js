@@ -8,7 +8,7 @@ We grant You a nonexclusive, royalty-free right to use and modify the Sample Cod
 Please note: None of the conditions outlined in the disclaimer above will supercede the terms and conditions contained within the Premier Customer Services Description.
 */
 var queryDropdown = ("#query-path-dropdown");
-var optionsMetric = ("input[type='radio'][name='radio']:checked");;
+var optionsMetric = ("input[type='radio'][name='radio']:checked");
 
 var settings = null;
 
