@@ -112,12 +112,12 @@ function ProcessRevisions(revisions) {
     }
 
     //Validations
-    if (revisions.some(function (s) {
-        return s.fields["System.State"] != "Approved";
+    if (!revisions.some(function (s) {
+        return s.fields["System.State"] == "Approved";
     })) //Valida se o PBI passou pelo stage Inicial
         return;
-    if (revisions.some(function (s) {
-        return s.fields["System.State"] != "Done";
+    if (!revisions.some(function (s) {
+        return s.fields["System.State"] == "Done";
     })) //Valida se o PBI chegou no stage Final
         return;
     if (revisions[revisions.length - 1].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
