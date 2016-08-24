@@ -94,28 +94,23 @@ namespace KpiAgile
                 DateTime dtEndThroughput = new DateTime();
                 foreach (WorkItem workItem in workItems)
                 {
+                    if (workItem.Fields[fieldName].Equals("New"))
+                        continue;
 
                     #region Throughput - WIP
 
-                    if (!workItem.Fields[fieldName].Equals(strLastStage) && !workItem.Fields[fieldName].Equals("0.Novo") && !workItem.Fields[fieldName].Equals("1.Categorizado") 
-                        && workItem.Fields.Any(s => s.Key.Equals("Microsoft.VSTS.Scheduling.OriginalEstimate")))
+                    if (!workItem.Fields[fieldName].Equals(strLastStage) && workItem.Fields.Any(s => s.Key.Equals("Microsoft.VSTS.Scheduling.OriginalEstimate")))
                     {
-                        
                         double nPaginasWIP = Convert.ToDouble(workItem.Fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
                         nWIP.Add(nPaginasWIP);//Throughput
                     }
-                    if (workItem.Id == 14425)
-                    {
-                        continue;
-                    }
-
+                    
                     #endregion
 
                     List<WorkItem> workItemsRevisions = witClient.GetRevisionsAsync((int)workItem.Id).Result;
 
                     #region Validacoes Stages
-                    if (workItem.Fields[fieldName].Equals("New"))
-                        continue;
+                   
                     if (!workItemsRevisions.Any(s => s.Fields[fieldName].Equals(strStartStage) || s.Fields[fieldName].Equals(strStartStage.Remove(0, 2))))//Valida se o PBI passou pelo stage Inicial
                         continue;
                     if (!workItemsRevisions.Any(s => s.Fields[fieldName].Equals(strLastStage) || s.Fields[fieldName].Equals(strLastStage.Remove(0, 2))))//Valida se o PBI chegou no stage Final

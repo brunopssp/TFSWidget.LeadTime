@@ -18,8 +18,8 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient", 
                         $(queryDropdown).val(settings.queryPath);
                         if (settings.metric == "throughput")
                             $("input[name=radio]")[0].checked = true;
-                        else if (settings.metric == "cycletime")
-                            $("input[name=radio]")[1].checked = true;
+                        // else if (settings.metric == "cycletime")
+                        //     $("input[name=radio]")[1].checked = true;
                         else if (settings.metric == "leadtime")
                             $("input[name=radio]")[2].checked = true;
                     }
