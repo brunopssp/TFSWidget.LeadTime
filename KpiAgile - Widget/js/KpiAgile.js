@@ -106,24 +106,35 @@ function ProcessRevisions(revisions) {
 
     if (revisions[revisions.length - 1].fields["System.State"] == "New") {
         EndProcess();
+        return;
     }
     //Count WIP
     if (revisions[revisions.length - 1].fields["System.State"] != "Done") {
         nWIP.push(1);
         EndProcess();
+        return;
     }
 
     //Validations
     if (!revisions.some(function (s) {
         return s.fields["System.State"] == "Approved";
     })) //Valida se o PBI passou pelo stage Inicial
-        EndProcess();
+        {
+            EndProcess();
+            return;
+        }
     if (!revisions.some(function (s) {
         return s.fields["System.State"] == "Done";
     })) //Valida se o PBI chegou no stage Final
-        EndProcess();
+        {
+            EndProcess();
+            return;
+        }
     if (revisions[revisions.length - 1].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
-        EndProcess();
+        {
+            EndProcess();
+            return;
+        }
     //Validations^^^^^^^^
 
     var RevApproved = revisions.find(function (workItemRevision) {
