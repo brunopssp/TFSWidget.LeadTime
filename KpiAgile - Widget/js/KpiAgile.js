@@ -11,6 +11,7 @@ Please note: None of the conditions outlined in the disclaimer above will superc
 */
 
 var intLeadTime = new Array();
+var intCountWI = new Array();
 var nWIP = new Array();
 var countWorkItems = 0;
 var settings = null;
@@ -75,6 +76,7 @@ function ResultQuery(resultQuery) {
 
     //ForEach workItem in query, get the respective Revision
     intLeadTime = new Array();
+    intCountWI = new Array();
     if (resultQuery.queryType == 1) {
         //flat query
         countWorkItems = resultQuery.workItems.length;
@@ -103,25 +105,25 @@ function ResultQuery(resultQuery) {
 function ProcessRevisions(revisions) {
 
     if (revisions[revisions.length - 1].fields["System.State"] == "New") {
-        return;
+        EndProcess();
     }
     //Count WIP
     if (revisions[revisions.length - 1].fields["System.State"] != "Done") {
         nWIP.push(1);
-        return;
+        EndProcess();
     }
 
     //Validations
     if (!revisions.some(function (s) {
         return s.fields["System.State"] == "Approved";
     })) //Valida se o PBI passou pelo stage Inicial
-        return;
+        EndProcess();
     if (!revisions.some(function (s) {
         return s.fields["System.State"] == "Done";
     })) //Valida se o PBI chegou no stage Final
-        return;
+        EndProcess();
     if (revisions[revisions.length - 1].fields["System.State"] == "Approved") //Valida se o PBI voltou ao stage inicial
-        return;
+        EndProcess();
     //Validations^^^^^^^^
 
     var RevApproved = revisions.find(function (workItemRevision) {
@@ -142,14 +144,18 @@ function ProcessRevisions(revisions) {
     if (dtEndThroughput < dateDone) {
         dtEndThroughput = dateDone;
     }
-
     intLeadTime.push(1);
+    EndProcess();
+}
 
+function EndProcess() {
+    intCountWI.push(1);
     ShowResult();
+    return;
 }
 
 function ShowResult() {
-    if (countWorkItems == intLeadTime.length) {
+    if (intCountWI.length >= countWorkItems) {
         var tsIntervaloTotal = DaysBetween(dtStartThroughput, dtEndThroughput);
 
         $('#error').empty();
