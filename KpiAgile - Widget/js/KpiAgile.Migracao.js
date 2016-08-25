@@ -9,10 +9,10 @@ We grant You a nonexclusive, royalty-free right to use and modify the Sample Cod
 (iii) to indemnify, hold harmless, and defend Us and Our suppliers from and against any claims or lawsuits, including attorneys’ fees, that arise or result from the use or distribution of the Sample Code.
 Please note: None of the conditions outlined in the disclaimer above will supercede the terms and conditions contained within the Premier Customer Services Description.
 */
-var intLeadTime = new Array();
-var nWIP = new Array();
-var nTotalPaginas = new Array();
-var countWorkItems = 0;
+var intCountWI = new Array();
+var intWIP = new Array();
+var intTotalPaginas = new Array();
+var resultQueryLength = 0;
 var settings = null;
 var dtStartThroughput = new Date();
 var dtEndThroughput = new Date(1969);
@@ -44,7 +44,7 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
                 $('#error').empty();
                 $('h2.title').text("");
                 $('#query-info-container').empty().text("");
-                $('#widget').css('background-color', 'rgb(0, 0, 0)');
+                $('#widget').css({ 'background-color': 'rgb(255, 255, 255)', 'text-align': 'center' });
                 $("<img></img>").attr("src", "img/loadingAnimation.gif").appendTo($('#query-info-container'));
                 $('#footer').empty().text("");
 
@@ -77,28 +77,23 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 function ResultQuery(resultQuery) {
 
     //ForEach workItem in query, get the respective Revision
-    intLeadTime = new Array();
     if (resultQuery.queryType == 1) {
         //flat query
-        countWorkItems = resultQuery.workItems.length;
-        if (countWorkItems > 0) {
+        resultQueryLength = resultQuery.workItems.length;
+        if (resultQueryLength > 0) {
             resultQuery.workItems.forEach(function (workItem) {
-                //Validations
-                if (workItem.fields["System.State"] == "New") {
-                    return;
-                }
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
     } else {
-        countWorkItems = resultQuery.workItemRelations.length;
-        if (countWorkItems > 0) {
+        resultQueryLength = resultQuery.workItemRelations.length;
+        if (resultQueryLength > 0) {
             resultQuery.workItemRelations.forEach(function (workItem) {
                 client.getRevisions(workItem.target.id).then(ProcessRevisions);
             });
         }
     }
-    if (countWorkItems == 0) {
+    if (resultQueryLength == 0) {
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
         $('#query-info-container').empty().text("-");
@@ -109,32 +104,47 @@ function ResultQuery(resultQuery) {
 
 function ProcessRevisions(revisions) {
 
+    if (revisions[revisions.length - 1].fields["System.State"] == "New") {
+        EndProcess();
+        return;
+    }
     //Count WIP
-    if (revisions[revisions.length].fields[fieldName] != strLastStage && revisions.some(function (s) {
-        return s.Key == "Microsoft.VSTS.Scheduling.OriginalEstimate";
+    if (revisions[revisions.length - 1].fields[fieldName] != strLastStage && revisions.some(function (s) {
+        return s.key == "Microsoft.VSTS.Scheduling.OriginalEstimate";
     })) {
-        nWIP.push(revisions[revisions.length].fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
+        intWIP.push(revisions[revisions.length - 1].fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
+        EndProcess();
+        return;
     }
 
     //Validations
-    if (revisions.some(function (s) {
-        return s.Fields[fieldName] != strStartStage || s.Fields[fieldName] != strStartStage.Remove(0, 2);
+    if (!revisions.some(function (s) {
+        return s.Fields[fieldName] == strStartStage || s.Fields[fieldName] == strStartStage.remove(0, 2);
     })) //Valida se o PBI passou pelo stage Inicial
-        return;
-    if (revisions.some(function (s) {
-        return s.Fields[fieldName] != strLastStage || s.Fields[fieldName] != strLastStage.Remove(0, 2);
+        {
+            EndProcess();
+            return;
+        }
+    if (!revisions.some(function (s) {
+        return s.Fields[fieldName] == strLastStage || s.Fields[fieldName] == strLastStage.remove(0, 2);
     })) //Valida se o PBI chegou no stage Final
-        return;
-    if (revisions[revisions.length].fields[fieldName] == strStartStage || revisions[revisions.length].fields[fieldName] == strStartStage.Remove(0, 2)) //Valida se o PBI voltou ao stage inicial
-        return;
+        {
+            EndProcess();
+            return;
+        }
+    if (revisions[revisions.length].fields[fieldName] == strStartStage || revisions[revisions.length].fields[fieldName] == strStartStage.remove(0, 2)) //Valida se o PBI voltou ao stage inicial
+        {
+            EndProcess();
+            return;
+        }
     //Validations^^^^^^^^
 
     var RevApproved = revisions.find(function (workItemRevision) {
-        return workItemRevision.fields[fieldName] == strStartStage || workItemRevision.fields[fieldName] == strStartStage.Remove(0, 2);
+        return workItemRevision.fields[fieldName] == strStartStage || workItemRevision.fields[fieldName] == strStartStage.remove(0, 2);
     });
 
     var RevDone = revisions.find(function (workItemRevision) {
-        return workItemRevision.fields[fieldName] == strLastStage || workItemRevision.fields[fieldName] == strLastStage.Remove(0, 2);
+        return workItemRevision.fields[fieldName] == strLastStage || workItemRevision.fields[fieldName] == strLastStage.remove(0, 2);
     });
 
     var dateApproved = RevApproved != null && RevApproved.fields != undefined ? new Date(RevApproved.fields["System.ChangedDate"]) : new Date();
@@ -147,27 +157,30 @@ function ProcessRevisions(revisions) {
     if (dtEndThroughput < dateDone) {
         dtEndThroughput = dateDone;
     }
+    intTotalPaginas.push(revisions[revisions.length].fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
+    EndProcess();
+}
 
-    intLeadTime.push(1);
-    nTotalPaginas.push(revisions[revisions.length].fields["Microsoft.VSTS.Scheduling.OriginalEstimate"]);
-
+function EndProcess() {
+    intCountWI.push(1);
     ShowResult();
+    return;
 }
 
 function ShowResult() {
-    if (countWorkItems == intLeadTime.length) {
+    if (intCountWI.length >= resultQueryLength) {
         var tsIntervaloTotal = DaysBetween(dtStartThroughput, dtEndThroughput);
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
-        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)' });
+        $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)', 'text-align': 'left' });
 
         var sumWIP = 0;
-        nWIP.forEach(function (item) {
+        intWIP.forEach(function (item) {
             sumWIP += item;
         });
         var sumPag = 0;
-        nTotalPaginas.forEach(function (item) {
+        intTotalPaginas.forEach(function (item) {
             sumPag += item;
         });
         var throughput = sumPag / tsIntervaloTotal;

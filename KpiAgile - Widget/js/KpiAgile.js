@@ -10,10 +10,10 @@ We grant You a nonexclusive, royalty-free right to use and modify the Sample Cod
 Please note: None of the conditions outlined in the disclaimer above will supercede the terms and conditions contained within the Premier Customer Services Description.
 */
 
-var intLeadTime = new Array();
+var intCountDoneWI = new Array();
 var intCountWI = new Array();
 var nWIP = new Array();
-var countWorkItems = 0;
+var resultQueryLength = 0;
 var settings = null;
 var dtStartThroughput = new Date();
 var dtEndThroughput = new Date(1969);
@@ -75,25 +75,25 @@ VSS.require(["TFS/Dashboards/WidgetHelpers", "TFS/WorkItemTracking/RestClient"],
 function ResultQuery(resultQuery) {
 
     //ForEach workItem in query, get the respective Revision
-    intLeadTime = new Array();
+    intCountDoneWI = new Array();
     intCountWI = new Array();
     if (resultQuery.queryType == 1) {
         //flat query
-        countWorkItems = resultQuery.workItems.length;
-        if (countWorkItems > 0) {
+        resultQueryLength = resultQuery.workItems.length;
+        if (resultQueryLength > 0) {
             resultQuery.workItems.forEach(function (workItem) {
                 client.getRevisions(workItem.id).then(ProcessRevisions);
             });
         }
     } else {
-        countWorkItems = resultQuery.workItemRelations.length;
-        if (countWorkItems > 0) {
+        resultQueryLength = resultQuery.workItemRelations.length;
+        if (resultQueryLength > 0) {
             resultQuery.workItemRelations.forEach(function (workItem) {
                 client.getRevisions(workItem.target.id).then(ProcessRevisions);
             });
         }
     }
-    if (countWorkItems == 0) {
+    if (resultQueryLength == 0) {
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
         $('#query-info-container').empty().text("-");
@@ -155,7 +155,7 @@ function ProcessRevisions(revisions) {
     if (dtEndThroughput < dateDone) {
         dtEndThroughput = dateDone;
     }
-    intLeadTime.push(1);
+    intCountDoneWI.push(1);
     EndProcess();
 }
 
@@ -166,14 +166,14 @@ function EndProcess() {
 }
 
 function ShowResult() {
-    if (intCountWI.length >= countWorkItems) {
+    if (intCountWI.length >= resultQueryLength) {
         var tsIntervaloTotal = DaysBetween(dtStartThroughput, dtEndThroughput);
 
         $('#error').empty();
         $('h2.title').text(settings.queryPath.substr(15));
         $('#widget').css({ 'color': 'white', 'background-color': 'rgb(0, 156, 204)', 'text-align': 'left' });
 
-        var cycleTime = tsIntervaloTotal / intLeadTime.length;
+        var cycleTime = tsIntervaloTotal / intCountDoneWI.length;
 
         // var sumWIP = 0;
         // nWIP.forEach(item => {
@@ -182,14 +182,11 @@ function ShowResult() {
         if (settings.metric == "cycletime") {
 
             $('#query-info-container').empty().html(Math.round(cycleTime * 10) / 10);
-            $('#footer').empty().text("(Cycle Time) Days per Item");
+            $('#footer').empty().text("(Cycle Time) Days by Item");
         } else if (settings.metric == "throughput") {
-            // var throughput = (intLeadTime.length / tsIntervaloTotal);
-            // $('#query-info-container').empty().html(Math.round(throughput * 100) / 100);
-            // $('#footer').empty().text("(Throughput) Items per Day");
-            var throughputPerWeek = intLeadTime.length / (tsIntervaloTotal / 7);
+            var throughputPerWeek = intCountDoneWI.length / (tsIntervaloTotal / 7);
             $('#query-info-container').empty().html(Math.round(throughputPerWeek * 10) / 10);
-            $('#footer').empty().text("(Throughput) Items per Week");
+            $('#footer').empty().text("(Throughput) Items by Week");
         } else if (settings.metric == "leadtime") {
             var leadTime = nWIP.length * cycleTime; //---"WIP * CycleTime" ou "WIP / Throughput
             $('#query-info-container').empty().html(Math.round(leadTime * 10) / 10);
